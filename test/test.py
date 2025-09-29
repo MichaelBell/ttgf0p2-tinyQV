@@ -202,7 +202,7 @@ async def test_start(dut):
       if (sel & 2) == 0:
         assert (dut.uio_out.value[7]) == 1
       
-      count += value.to_unsigned()
+      count += int(value)
       await ClockCycles(dut.clk, 1)
 
     if sel == 0: level = 0
