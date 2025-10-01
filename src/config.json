@@ -47,6 +47,26 @@
   "//": "https://tinytapeout.com/faq/#how-can-i-map-an-additional-external-clock-to-one-of-the-gpios",
   "CLOCK_PORT": "clk",
 
+  "MACROS": {
+    "gf180mcu_fd_ip_sram__sram512x8m8wm1": {
+      "instances": {
+        "i_tinyqv.cpu.i_scratch.i_sram": {
+          "location": [1008.36, 251.98],
+          "orientation": "N"
+        }
+      },
+      "gds": ["pdk_dir::libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds"],
+      "lef": ["pdk_dir::libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef"],
+      "lib": {
+        "*_tt_025C_3v30": ["pdk_dir::libs.ref/gf180mcu_fd_ip_sram/lib/gf180mcu_fd_ip_sram__sram64x8m8wm1__tt_025C_3v30.lib"],
+        "*_ss_125C_3v00": ["pdk_dir::libs.ref/gf180mcu_fd_ip_sram/lib/gf180mcu_fd_ip_sram__sram64x8m8wm1__ss_125C_3v00.lib"],
+        "*_ff_n40C_3v60": ["pdk_dir::libs.ref/gf180mcu_fd_ip_sram/lib/gf180mcu_fd_ip_sram__sram64x8m8wm1__ff_n40C_3v60.lib"]
+      }
+    }
+  },
+
+  "PDN_MACRO_CONNECTIONS": ["i_tinyqv.cpu.i_scratch.i_sram VPWR VGND VDD VSS"],  
+
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
   "//": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
