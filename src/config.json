@@ -17,7 +17,7 @@
 
   "//": "CLOCK_PERIOD - Increase this in case you are getting setup time violations.",
   "//": "The value is in nanoseconds, so 20ns == 50MHz.",
-  "CLOCK_PERIOD": 30,
+  "CLOCK_PERIOD": 33,
 
   "//": "Hold slack margin - Increase them in case you are getting hold violations.",
   "PL_RESIZER_HOLD_SLACK_MARGIN": 0.1,
@@ -51,7 +51,7 @@
     "gf180mcu_fd_ip_sram__sram512x8m8wm1": {
       "instances": {
         "i_tinyqv.cpu.i_scratch.i_sram": {
-          "location": [1008.36, 251.98],
+          "location": [1007.36, 251.98],
           "orientation": "N"
         }
       },
@@ -65,7 +65,17 @@
     }
   },
 
-  "PDN_MACRO_CONNECTIONS": ["i_tinyqv.cpu.i_scratch.i_sram VPWR VGND VDD VSS"],  
+  "PDN_MACRO_CONNECTIONS": ["i_tinyqv.cpu.i_scratch.i_sram VPWR VGND VDD VSS"],
+
+  "//": "  All met4 stripes are not connected internally, this causes PDN to crap out ...",
+  "ERROR_ON_PDN_VIOLATIONS": 0,
+
+  "//": "  Config",
+  "FP_PDN_HORIZONTAL_LAYER": "Metal3",
+  "FP_MACRO_HORIZONTAL_HALO": "3",
+  "FP_MACRO_VERTICAL_HALO": "0",
+  "FP_PDN_VOFFSET": "36.65",
+  "FP_PDN_VPITCH": 38.73,
 
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
@@ -84,7 +94,7 @@
   "TOP_MARGIN_MULT": 1,
   "BOTTOM_MARGIN_MULT": 1,
   "LEFT_MARGIN_MULT": 6,
-  "RIGHT_MARGIN_MULT": 6,
+  "RIGHT_MARGIN_MULT": 3,
 
   "//": "Absolute die size",
   "FP_SIZING": "absolute",
@@ -93,8 +103,6 @@
 
   "FP_IO_HLENGTH": 2,
   "FP_IO_VLENGTH": 2,
-
-  "FP_PDN_VPITCH": 38.87,
 
   "//": "Clock",
   "RUN_CTS": 1,

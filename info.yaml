@@ -5,7 +5,7 @@ project:
   discord:      "rebelmike"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "A Risc-V SoC for Tiny Tapeout"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     64000000       # Clock frequency in Hz (or 0 if not applicable)
+  clock_hz:     28000000       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 340x160 uM.
   tiles: "4x4"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 3x4 or 4x4
@@ -31,10 +31,12 @@ project:
     - "tinyQV/cpu/register.v"
     - "tinyQV/cpu/latch_reg.v"
     - "tinyQV/cpu/time.v"
+    - "tinyQV/cpu/internal_ram.v"
     - "tinyQV/peri/uart/uart_tx.v"
     - "tinyQV/peri/uart/uart_rx.v"
     - "tinyQV/peri/spi/spi.v"
     - "tinyQV/peri/pwm/pwm.v"
+    - "../macro/gf180mcu_fd_ip_sram__sram512x8m8wm1.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
