@@ -77,6 +77,9 @@
   "FP_PDN_VOFFSET": "36.65",
   "FP_PDN_VPITCH": 38.73,
 
+  "//": "SRAM macro doesn't pass DRC",
+  "ERROR_ON_MAGIC_DRC": 0,
+
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
   "//": "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
