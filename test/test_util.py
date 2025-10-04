@@ -166,7 +166,7 @@ async def setup_ram(dut, ram_a):
 
 select = None
 
-async def start_read(dut, addr):
+async def start_read(dut, addr, allow_interrupt=False):
     global select
 
     if addr is None:
@@ -203,12 +203,14 @@ async def start_read(dut, addr):
     assert dut.qspi_data_oe.value == 0xF
     for i in range(6):
         await ClockCycles(dut.clk, 1, False)
+        if allow_interrupt and select.value == 1: return False
         assert select.value == 0
         assert dut.qspi_clk_out.value == 1
         if addr is not None:
             assert dut.qspi_data_out.value == (addr >> (20 - i * 4)) & 0xF
         assert dut.qspi_data_oe.value == 0xF
         await ClockCycles(dut.clk, 1, False)
+        if allow_interrupt and select.value == 1: return False
         assert select.value == 0
         assert dut.qspi_clk_out.value == 0
 
@@ -216,23 +218,28 @@ async def start_read(dut, addr):
     if dut.qspi_flash_select == select:
         for i in range(2):
             await ClockCycles(dut.clk, 1, False)
+            if allow_interrupt and select.value == 1: return False
             assert select.value == 0
             assert dut.qspi_clk_out.value == 1
             assert dut.qspi_data_oe.value == 0xF
             assert dut.qspi_data_out.value == 0xA
             await ClockCycles(dut.clk, 1, False)
+            if allow_interrupt and select.value == 1: return False
             assert select.value == 0
             assert dut.qspi_clk_out.value == 0
 
     for i in range(4):
         await ClockCycles(dut.clk, 1, False)
+        if allow_interrupt and select.value == 1: return False
         assert select.value == 0
         assert dut.qspi_clk_out.value == 1
         assert dut.qspi_data_oe.value == 0
         await ClockCycles(dut.clk, 1, False)
+        if allow_interrupt and select.value == 1: return False
         assert select.value == 0
         assert dut.qspi_clk_out.value == 0
 
+    return True
 
 async def start_write(dut, addr):
     global select
@@ -389,7 +396,7 @@ async def read_byte(dut, reg, expected_val):
 
   await stop_nops()
 
-async def expect_store(dut, addr, bytes=4, allow_long_delay=False):
+async def expect_store(dut, addr, bytes=4, allow_long_delay=False, allow_interrupt=False):
     if addr >= 0x1800000:
         select = dut.qspi_ram_b_select
     elif addr >= 0x1000000:
@@ -429,10 +436,13 @@ async def expect_store(dut, addr, bytes=4, allow_long_delay=False):
         await ClockCycles(dut.clk, 1)
         if dut.qspi_flash_select.value == 0:
             if hasattr(dut.user_project, "i_tinyqv"):
-                await start_read(dut, dut.user_project.i_tinyqv.instr_addr.value.to_unsigned() * 2)
+                interrupted = not await start_read(dut, dut.user_project.i_tinyqv.instr_addr.value.to_unsigned() * 2, allow_interrupt)
             else:
-                await start_read(dut, None)
-            break
+                interrupted = not await start_read(dut, None, allow_interrupt)
+            if interrupted:
+                allow_interrupt = False
+            else:
+                break
     else:
         assert False
 

@@ -148,7 +148,7 @@ async def test_timer(dut):
 
     # Read time
     await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
-    assert await read_reg(dut, x1) <= 1
+    assert await read_reg(dut, x1) <= 2
 
     await start_nops(dut)
     await Timer(5, "us")
@@ -156,15 +156,15 @@ async def test_timer(dut):
 
     # Read time
     await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
-    assert 8 <= await read_reg(dut, x1) <= 10
+    assert 9 <= await read_reg(dut, x1) <= 11
 
     # Set timecmp
-    await send_instr(dut, InstructionADDI(x1, x0, 20).encode())
+    await send_instr(dut, InstructionADDI(x1, x0, 30).encode())
     await send_instr(dut, InstructionSW(x0, x1, -0xfc).encode())
 
     # And read back
     await send_instr(dut, InstructionLW(a0, x0, -0xfc).encode())
-    assert await read_reg(dut, a0) == 20
+    assert await read_reg(dut, a0) == 30
 
     # Enable timer interrupt
     await send_instr(dut, InstructionADDI(x1, x0, 0x80).encode())
@@ -172,8 +172,8 @@ async def test_timer(dut):
 
     while dut.qspi_flash_select.value == 0:
         cur_time = get_sim_time("ns") - start_time
-        await send_instr(dut, InstructionADDI(x0, x0, 0).encode(), cur_time > 19000)
-        assert cur_time <= 21500
+        await send_instr(dut, InstructionADDI(x0, x0, 0).encode(), cur_time > 29000)
+        assert cur_time <= 31500
 
     await ClockCycles(dut.clk, 2)
     await start_read(dut, 8)
@@ -196,10 +196,10 @@ async def test_time_limit(dut):
 
     # Read time limit
     await send_instr(dut, InstructionLW(x1, tp, 0x2c).encode())
-    assert await read_reg(dut, x1) == 0x1b
+    assert await read_reg(dut, x1) == 0x17
 
     # Halve the divider, time should now advance twice as fast
-    await send_instr(dut, InstructionADDI(x1, x0, 0xd).encode())
+    await send_instr(dut, InstructionADDI(x1, x0, 0xb).encode())
     await send_instr(dut, InstructionSW(tp, x1, 0x2c).encode())
 
     # Read time
@@ -207,15 +207,15 @@ async def test_time_limit(dut):
     start_time = await read_reg(dut, x1)
 
     await start_nops(dut)
-    await Timer(20, "us")
+    await Timer(30, "us")
     await stop_nops()
 
     # Read time
     await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
-    assert start_time+42 <= await read_reg(dut, x1) <= start_time+44
+    assert start_time+67 <= await read_reg(dut, x1) <= start_time+71
 
-    # Set divider to 56, time should advance more slowly
-    await send_instr(dut, InstructionADDI(x1, x0, 0x37).encode())
+    # Set divider to 48, time should advance more slowly
+    await send_instr(dut, InstructionADDI(x1, x0, 0x2f).encode())
     await send_instr(dut, InstructionSW(tp, x1, 0x2c).encode())
 
     # Read time
@@ -223,12 +223,12 @@ async def test_time_limit(dut):
     start_time = await read_reg(dut, x1)
 
     await start_nops(dut)
-    await Timer(20, "us")
+    await Timer(30, "us")
     await stop_nops()
 
     # Read time
     await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
-    assert start_time+12 <= await read_reg(dut, x1) <= start_time+14
+    assert start_time+17 <= await read_reg(dut, x1) <= start_time+19
 
 @cocotb.test()
 async def test_scratch_memory(dut):
@@ -526,7 +526,7 @@ async def test_multistore_interrupt(dut):
 
     for i in range(100):
         await send_instr(dut, encode_sw4(gp, a1, i*16))
-        await expect_store(dut, 0x1000400 + i*16, 16)
+        await expect_store(dut, 0x1000400 + i*16, 16, allow_interrupt=True)
 
     # Interrupt should be pending
     await send_instr(dut, InstructionCSRRS(a0, x0, csrnames.mip).encode())

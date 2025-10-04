@@ -164,7 +164,7 @@ module tinyQV_peripherals #(parameter CLOCK_MHZ=64) (
                 if (gpio_out_func_sel[i][4]) begin
                     uo_out_comb[i] = uo_out_from_simple_peri[gpio_out_func_sel[i][2:0]][i];
                 end else begin
-                    uo_out_comb[i] = uo_out_from_user_peri[gpio_out_func_sel[i][2:0]][i];
+                    uo_out_comb[i] = uo_out_from_user_peri[gpio_out_func_sel[i][3:0]][i];
                 end
             end
         end
