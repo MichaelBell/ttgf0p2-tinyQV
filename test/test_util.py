@@ -371,7 +371,7 @@ async def read_byte(dut, reg, expected_val):
   await send_instr(dut, InstructionSW(tp, reg, 0x18).encode())
 
   await start_nops(dut)
-  for i in range(80):
+  for i in range(240):
       if dut.debug_uart_tx.value == 0:
           break
       else:

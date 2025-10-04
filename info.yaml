@@ -37,6 +37,17 @@ project:
     - "tinyQV/peri/spi/spi.v"
     - "tinyQV/peri/pwm/pwm.v"
     - "../macro/gf180mcu_fd_ip_sram__sram512x8m8wm1.v"
+    - "peripherals.v"
+    - "peri_byte_empty.v"
+    - "peri_full_empty.v"
+    - "user_peripherals/uart/peri_uart.v"
+    - "user_peripherals/uart/uart_rx.v"
+    - "user_peripherals/uart/uart_tx.v"
+    - "user_peripherals/spi.v"
+    - "user_peripherals/game_pmod.v"
+    - "user_peripherals/matt_pwm/matt_pwm.v"
+    - "user_peripherals/matt_pwm/pwm_strobe_gen.v"
+    - "user_peripherals/matt_pwm/pwm.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).

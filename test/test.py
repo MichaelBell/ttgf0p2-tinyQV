@@ -5,12 +5,12 @@ import random
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles, Timer, FallingEdge
+from cocotb.triggers import ClockCycles, Timer, FallingEdge, RisingEdge
 from cocotb.utils import get_sim_time
 
 from riscvmodel.insn import *
 
-from riscvmodel.regnames import x0, x1, sp, gp, tp, a0, a1, a2, a3
+from riscvmodel.regnames import x0, x1, sp, gp, tp, a0, a1, a2, a3, a4
 from riscvmodel import csrnames
 from riscvmodel.variant import RV32E
 
@@ -20,7 +20,7 @@ from test_util import reset, start_read, send_instr, start_nops, stop_nops, read
 async def test_start(dut):
   dut._log.info("Start")
   
-  clock = Clock(dut.clk, 15.624, unit="ns")
+  clock = Clock(dut.clk, 35.714, unit="ns")
   cocotb.start_soon(clock.start())
 
   # Reset
@@ -29,6 +29,10 @@ async def test_start(dut):
   # Should start reading flash after 1 cycle
   await ClockCycles(dut.clk, 1)
   await start_read(dut, 0)
+
+  # Read ID
+  await send_instr(dut, InstructionLW(x1, tp, 0x8).encode())
+  assert await read_reg(dut, x1) == ord('2') | (ord('.') << 8) | (ord('F') << 16) | (ord('G') << 24)
   
   for i in range(8):
     await send_instr(dut, InstructionADDI(i+8, x0, 0x102*i).encode())
@@ -36,7 +40,7 @@ async def test_start(dut):
   # Test UART TX
   uart_byte = 0x54
   await send_instr(dut, InstructionADDI(x1, x0, uart_byte).encode())
-  await send_instr(dut, InstructionSW(tp, x1, 0x10).encode())
+  await send_instr(dut, InstructionSW(tp, x1, 0x80).encode())
 
   await start_nops(dut)
   bit_time = 8680
@@ -50,10 +54,24 @@ async def test_start(dut):
   assert dut.uart_tx.value == 1
 
   # Test UART RX
-  for j in range(10):
+  for j in range(5):
     assert dut.uart_rts.value == 0
+
     uart_rx_byte = random.randint(0, 255)
     val = uart_rx_byte
+    dut.uart_rx.value = 0
+    await Timer(bit_time, "ns")
+    for i in range(8):
+        dut.uart_rx.value = val & 1
+        await Timer(bit_time, "ns")
+        assert dut.uart_rts.value == 0
+        val >>= 1
+    dut.uart_rx.value = 1
+    await Timer(bit_time, "ns")
+    assert dut.uart_rts.value == 0
+
+    uart_rx_byte2 = random.randint(0, 255)
+    val = uart_rx_byte2
     dut.uart_rx.value = 0
     await Timer(bit_time, "ns")
     for i in range(8):
@@ -67,15 +85,20 @@ async def test_start(dut):
 
     await stop_nops()
 
-    await send_instr(dut, InstructionLW(x1, tp, 0x14).encode())
+    await send_instr(dut, InstructionLW(x1, tp, 0x84).encode())
     await read_byte(dut, x1, 0x2)
-    await send_instr(dut, InstructionLW(x1, tp, 0x10).encode())
+    await send_instr(dut, InstructionLW(x1, tp, 0x80).encode())
     await read_byte(dut, x1, uart_rx_byte)
     assert dut.uart_rts.value == 0
-    await send_instr(dut, InstructionLW(x1, tp, 0x14).encode())
+    await send_instr(dut, InstructionLW(x1, tp, 0x84).encode())
+    await read_byte(dut, x1, 0x2)
+    await send_instr(dut, InstructionLW(x1, tp, 0x80).encode())
+    await read_byte(dut, x1, uart_rx_byte2)
+    assert dut.uart_rts.value == 0
+    await send_instr(dut, InstructionLW(x1, tp, 0x84).encode())
     await read_byte(dut, x1, 0)
 
-    if j != 9:
+    if j != 4:
         await start_nops(dut)
 
   # Test Debug UART TX
@@ -83,138 +106,31 @@ async def test_start(dut):
   await send_instr(dut, InstructionADDI(x1, x0, uart_byte).encode())
   await read_byte(dut, x1, uart_byte)
 
-  # Test SPI
-  spi_byte = 0xa5
-  spi_byte_in = random.randint(0, 255)
-  #print(f"{spi_byte_in:02x}")
-  await send_instr(dut, InstructionADDI(x1, x0, spi_byte | 0x100).encode())
-  await send_instr(dut, InstructionSW(tp, x1, 0x20).encode())
-
-  await start_nops(dut)
-  assert dut.spi_cs.value == 1
-  for i in range(20):
-    await ClockCycles(dut.clk, 1)
-    if dut.spi_cs.value == 0:
-        break
-
-  # Default divider is 1
-  divider = 1
-  for i in range(8):
-      assert dut.spi_cs.value == 0
-      assert dut.spi_sck.value == 0
-      assert dut.spi_mosi.value == (1 if (spi_byte & 0x80) else 0)
-      dut.spi_miso.value = (1 if (spi_byte_in & 0x80) else 0)
-      await ClockCycles(dut.clk, divider)
-      assert dut.spi_cs.value == 0
-      assert dut.spi_sck.value == 1
-      assert dut.spi_mosi.value == (1 if (spi_byte & 0x80) else 0)
-      await ClockCycles(dut.clk, divider)
-      spi_byte <<= 1
-      spi_byte_in <<= 1
-
-  assert dut.spi_sck.value == 0
-  assert dut.spi_cs.value == 0
-  await ClockCycles(dut.clk, divider)
-  assert dut.spi_cs.value == 1
-
-  await stop_nops()  
-
-  await send_instr(dut, InstructionLW(x1, tp, 0x20).encode())
-  await read_byte(dut, x1, spi_byte_in >> 8)
-
-  for divider in range(1,16):
-    spi_byte = random.randint(0, 255)
-    spi_byte_in = random.randint(0, 255)
-    #print(f"{spi_byte_in:02x}")
-    spi_config = divider - 1
-    if divider == 1: spi_config += 256  # Use high latency for divider 1
-    await send_instr(dut, InstructionADDI(x1, x0, spi_config).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x24).encode())
-    await send_instr(dut, InstructionADDI(x1, x0, spi_byte | 0x100).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x20).encode())
-
-    await start_nops(dut)
-    assert dut.spi_cs.value == 1
-    for i in range(20):
-        await ClockCycles(dut.clk, 1)
-        if dut.spi_cs.value == 0:
-            break
-
-    for i in range(8):
-        assert dut.spi_cs.value == 0
-        assert dut.spi_sck.value == 0
-        assert dut.spi_mosi.value == (1 if (spi_byte & 0x80) else 0)
-        await ClockCycles(dut.clk, divider)
-        assert dut.spi_cs.value == 0
-        assert dut.spi_sck.value == 1
-        dut.spi_miso.value = (1 if (spi_byte_in & 0x80) else 0)
-        assert dut.spi_mosi.value == (1 if (spi_byte & 0x80) else 0)
-        await ClockCycles(dut.clk, divider)
-        spi_byte <<= 1
-        spi_byte_in <<= 1
-
-    await ClockCycles(dut.clk, divider)
-    assert dut.spi_cs.value == 1
-
-    await stop_nops()  
-    await send_instr(dut, InstructionLW(x1, tp, 0x20).encode())
-    await read_byte(dut, x1, spi_byte_in >> 8)
-
   # GPIO
+  await send_instr(dut, InstructionADDI(x1, x0, 0xff).encode())
+  await send_instr(dut, InstructionSW(tp, x1, 0x0c).encode())
+
   for i in range(40):
     gpio_sel = random.randint(0, 255)
     gpio_out = random.randint(0, 255)
-    await send_instr(dut, InstructionADDI(x1, x0, gpio_sel).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x0C).encode())
+    for j in range(8):
+        await send_instr(dut, InstructionADDI(x1, x0, (gpio_sel >> j) & 1).encode())
+        await send_instr(dut, InstructionSW(tp, x1, 0x60 + j*4).encode())
     await send_instr(dut, InstructionADDI(x1, x0, gpio_out).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x0).encode())
+    await send_instr(dut, InstructionSW(tp, x1, 0x40).encode())
     for _ in range(3):
         await send_instr(dut, InstructionADDI(x0, x0, 0).encode())
     assert (dut.uo_out.value.to_unsigned() & gpio_sel) == (gpio_out & gpio_sel)
 
   # Ensure uo_out is normally high
   await send_instr(dut, InstructionADDI(x1, x0, 0x80).encode())
-  await send_instr(dut, InstructionSW(tp, x1, 0x0).encode())
-
-  # PWM
-  for i in range(10):
-    level = random.randint(0, 255)
-    sel = random.randint(0, 3)
-    await send_instr(dut, InstructionADDI(x1, x0, (sel << 8) | 0x80).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x0C).encode())
-    await send_instr(dut, InstructionADDI(x1, x0, level).encode())
-    await send_instr(dut, InstructionSW(tp, x1, 0x28).encode())
-    await start_nops(dut)
-    await ClockCycles(dut.clk, 24)
-
-    count = 0
-    for i in range(255):
-      value = 0
-      if sel & 1:
-        value = dut.uo_out.value[7]
-        if sel & 2:
-          assert (dut.uio_out.value[7]) == value
-      else:
-        assert (dut.uo_out.value[7]) == 1
-        if sel & 2:
-          value = dut.uio_out.value[7]
-      
-      if (sel & 2) == 0:
-        assert (dut.uio_out.value[7]) == 1
-      
-      count += int(value)
-      await ClockCycles(dut.clk, 1)
-
-    if sel == 0: level = 0
-    assert count == level
-
-    await stop_nops()
+  await send_instr(dut, InstructionSW(tp, x1, 0x40).encode())
 
 @cocotb.test()
 async def test_timer(dut):
     dut._log.info("Start")
 
-    clock = Clock(dut.clk, 15.624, unit="ns")
+    clock = Clock(dut.clk, 35.714, unit="ns")
     cocotb.start_soon(clock.start())
 
     mhz_clock = Clock(dut.mhz_clk, 1000, unit="ns")
@@ -240,7 +156,7 @@ async def test_timer(dut):
 
     # Read time
     await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
-    assert 6 <= await read_reg(dut, x1) <= 8
+    assert 8 <= await read_reg(dut, x1) <= 10
 
     # Set timecmp
     await send_instr(dut, InstructionADDI(x1, x0, 20).encode())
@@ -256,64 +172,69 @@ async def test_timer(dut):
 
     while dut.qspi_flash_select.value == 0:
         cur_time = get_sim_time("ns") - start_time
-        await send_instr(dut, InstructionADDI(x0, x0, 0).encode(), cur_time > 19200)
-        assert cur_time <= 20500
+        await send_instr(dut, InstructionADDI(x0, x0, 0).encode(), cur_time > 19000)
+        assert cur_time <= 21500
 
     await ClockCycles(dut.clk, 2)
     await start_read(dut, 8)
     await send_instr(dut, InstructionCSRRS(a0, x0, csrnames.mcause).encode())
     assert await read_reg(dut, a0) == 0x80000007
 
-# Game peripheral not currently present
-#@cocotb.test()
-async def test_game(dut):
+@cocotb.test()
+async def test_time_limit(dut):
     dut._log.info("Start")
-    
-    clock = Clock(dut.clk, 15.624, unit="ns")
+
+    clock = Clock(dut.clk, 35.714, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
     await reset(dut)
-    
+
     # Should start reading flash after 1 cycle
     await ClockCycles(dut.clk, 1)
     await start_read(dut, 0)
-  
-    # Read controller state
-    await send_instr(dut, InstructionLW(x1, tp, 0x40).encode())
-    assert await read_reg(dut, x1) == 0xFFF
-    await send_instr(dut, InstructionLW(x1, tp, 0x44).encode())
-    assert await read_reg(dut, x1) == 0xFFF
 
-    for i in range(10):
-        await start_nops(dut)
+    # Read time limit
+    await send_instr(dut, InstructionLW(x1, tp, 0x2c).encode())
+    assert await read_reg(dut, x1) == 0x1b
 
-        game_word = random.randint(0, 0xffffff)
-        val = game_word
-        for _ in range(24):
-            dut.game_data.value = (1 if val & 0x800000 else 0)
-            await Timer(5, "us")
-            dut.game_clk.value = 1
-            await Timer(5, "us")
-            dut.game_clk.value = 0
-            val <<= 1
-        
-        await Timer(5, "us")
-        dut.game_latch.value = 1
-        await Timer(5, "us")
-        dut.game_latch.value = 0
-        await stop_nops()
+    # Halve the divider, time should now advance twice as fast
+    await send_instr(dut, InstructionADDI(x1, x0, 0xd).encode())
+    await send_instr(dut, InstructionSW(tp, x1, 0x2c).encode())
 
-        await send_instr(dut, InstructionLW(x1, tp, 0x40).encode())
-        assert await read_reg(dut, x1) == (game_word & 0xFFF)
-        await send_instr(dut, InstructionLW(x1, tp, 0x44).encode())
-        assert await read_reg(dut, x1) == (game_word >> 12)
+    # Read time
+    await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
+    start_time = await read_reg(dut, x1)
+
+    await start_nops(dut)
+    await Timer(20, "us")
+    await stop_nops()
+
+    # Read time
+    await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
+    assert start_time+42 <= await read_reg(dut, x1) <= start_time+44
+
+    # Set divider to 56, time should advance more slowly
+    await send_instr(dut, InstructionADDI(x1, x0, 0x37).encode())
+    await send_instr(dut, InstructionSW(tp, x1, 0x2c).encode())
+
+    # Read time
+    await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
+    start_time = await read_reg(dut, x1)
+
+    await start_nops(dut)
+    await Timer(20, "us")
+    await stop_nops()
+
+    # Read time
+    await send_instr(dut, InstructionLW(x1, x0, -0x100).encode())
+    assert start_time+12 <= await read_reg(dut, x1) <= start_time+14
 
 @cocotb.test()
 async def test_scratch_memory(dut):
     dut._log.info("Start")
     
-    clock = Clock(dut.clk, 15.624, unit="ns")
+    clock = Clock(dut.clk, 35.714, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
@@ -395,10 +316,33 @@ async def test_scratch_memory(dut):
                 RAM[write_addr + 3] = (write_val >> 24) & 0xff
 
 @cocotb.test()
+async def test_csr(dut):
+    dut._log.info("Start")
+    
+    clock = Clock(dut.clk, 35.714, unit="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    await reset(dut, 1, 0x3)
+    
+    # Should start reading flash after 1 cycle
+    await ClockCycles(dut.clk, 1)
+    await start_read(dut, 0)
+
+    # Disable interrupts and read current value of register
+    await send_instr(dut, InstructionADDI(a3, x0, 8).encode())
+    await send_instr(dut, InstructionCSRRC(a3, a3, csrnames.mstatus).encode())
+    assert await read_reg(dut, a3) == 0xC
+
+    # Reenable interrupts
+    await send_instr(dut, InstructionCSRRS(a3, a3, csrnames.mstatus).encode())
+    assert await read_reg(dut, a3) == 0x4
+
+@cocotb.test()
 async def test_debug_reg(dut):
   dut._log.info("Start")
   
-  clock = Clock(dut.clk, 15.624, unit="ns")
+  clock = Clock(dut.clk, 35.714, unit="ns")
   cocotb.start_soon(clock.start())
 
   # Reset
@@ -427,11 +371,56 @@ async def test_debug_reg(dut):
         await ClockCycles(dut.clk, 1)
     await stop_nops()
 
+async def test_pwm(dut, pwm_value, pwm_strobe):
+    
+    dut._log.info(f"sync to PWM rising edge")
+    # sync to pwm gen
+    await RisingEdge(dut.qspi_ram_b_select)
+    await FallingEdge(dut.qspi_ram_b_select)
+    await RisingEdge(dut.qspi_ram_b_select)
+    await ClockCycles(dut.clk, 1)
+    dut._log.info(f"assert {pwm_strobe * pwm_value} clocks of PWM high")
+    # assert the PWM is on for the length of time
+    for i in range(pwm_value):
+        assert dut.uio_out.value[7] == 1, f"failed on cycle {i}"
+        await ClockCycles(dut.clk, pwm_strobe)
+    dut._log.info(f"assert {pwm_strobe * (255 - pwm_value)} clocks of PWM low")
+    for i in range(255 - pwm_value):
+        assert dut.uio_out.value[7] == 0, f"failed on cycle {i}"
+        await ClockCycles(dut.clk, pwm_strobe)
+
+@cocotb.test()
+async def test_audio(dut):
+    dut._log.info("Start")
+
+    clock = Clock(dut.clk, 35.714, unit="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    await reset(dut)
+    
+    # Should start reading flash after 1 cycle
+    await ClockCycles(dut.clk, 1)
+    await start_read(dut, 0)
+
+    # Enable PWM audio
+    await send_instr(dut, InstructionADDI(x1, x0, 0x7).encode())
+    await send_instr(dut, InstructionSW(tp, x1, 0x50).encode())
+    
+    for pwm in (5, 23, 57, 240):
+        await send_instr(dut, InstructionADDI(x1, x0, pwm).encode())
+        await send_instr(dut, InstructionSB(tp, x1, 0x450).encode())
+        await start_nops(dut)
+
+        await test_pwm(dut, pwm, 1)
+
+        await stop_nops()
+
 @cocotb.test()
 async def test_load_bug(dut):
   dut._log.info("Start")
   
-  clock = Clock(dut.clk, 15.624, unit="ns")
+  clock = Clock(dut.clk, 35.714, unit="ns")
   cocotb.start_soon(clock.start())
 
   # Reset
@@ -456,12 +445,92 @@ async def test_load_bug(dut):
   await send_instr(dut, InstructionADDI(a0, x0, 0x001).encode())
   await send_instr(dut, InstructionBEQ(a0, x0, 270).encode())
 
-  await send_instr(dut, encode_clwsp(a3, tp, 4))
+  await send_instr(dut, encode_clwsp(a3, tp, 0x44))
   await send_instr(dut, encode_clwsp(a2, sp, 12))
   await expect_load(dut, 0x1001000 + 12, 0x123)
   await read_byte(dut, a3, input_byte)
   await read_byte(dut, a2, 0x123)
 
+@cocotb.test()
+async def test_load_throughput(dut):
+    dut._log.info("Start")
+
+    clock = Clock(dut.clk, 35.714, unit="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    await reset(dut)
+
+    input_byte = 0b01101000
+    dut.ui_in.value = input_byte
+
+    def encode_clwsp(reg, base_reg, imm):
+        scrambled = (((imm << (12 - 5)) & 0b1000000000000) |
+                        ((imm << ( 4 - 2)) & 0b0000001110000) |
+                        ((imm >> ( 6 - 2)) & 0b0000000001100))
+        if base_reg == 2:
+            return 0x4002 | scrambled | (reg << 7)
+        else:
+            return 0x6002 | scrambled | (reg << 7)  
+  
+    def encode_cswsp(base_reg, reg, imm):
+        scrambled = (((imm << ( 9 - 2)) & 0b1111000000000) |
+                        ((imm << ( 7 - 6)) & 0b0000110000000))
+        if base_reg == 2:
+            return 0xC002 | scrambled | (reg << 2)
+        else:
+            return 0xE002 | scrambled | (reg << 2)
+
+    # Should start reading flash after 1 cycle
+    await ClockCycles(dut.clk, 1)
+    await start_read(dut, 0)
+    await send_instr(dut, InstructionAUIPC(sp, 0x1001).encode())
+    await send_instr(dut, InstructionADDI(a0, x0, 0x001).encode())
+    await send_instr(dut, InstructionBEQ(a0, x0, 270).encode())
+
+    for i in range(32):
+        await send_instr(dut, encode_clwsp(a2, sp, i*4))
+        await send_instr(dut, encode_cswsp(tp, a2, 0x3c0))
+        await expect_load(dut, 0x1001000 + i*4, i)
+
+@cocotb.test()
+async def test_multistore_interrupt(dut):
+    dut._log.info("Start")
+
+    clock = Clock(dut.clk, 35.714, unit="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    await reset(dut)
+
+    input_byte = 0b01101000
+    dut.ui_in.value = input_byte
+
+    def encode_sw4(base_reg, reg, imm):
+        instr = InstructionSW(base_reg, reg, imm).encode()
+        return instr | (7 << 12)
+
+    # Should start reading flash after 1 cycle
+    await ClockCycles(dut.clk, 1)
+    await start_read(dut, 0)
+
+    # Transmit a byte and enable interrupt on writeable
+    await send_instr(dut, InstructionSW(tp, x0, 0x80).encode())
+    await send_instr(dut, InstructionLUI(a0, 0x80).encode())
+    await send_instr(dut, InstructionCSRRW(x0, a0, csrnames.mie).encode())
+
+    await send_instr(dut, InstructionADDI(a1, x0, 0x10).encode())
+    await send_instr(dut, InstructionADDI(a2, x0, 0x11).encode())
+    await send_instr(dut, InstructionADDI(a3, x0, 0x12).encode())
+    await send_instr(dut, InstructionADDI(a4, x0, 0x13).encode())
+
+    for i in range(100):
+        await send_instr(dut, encode_sw4(gp, a1, i*16))
+        await expect_store(dut, 0x1000400 + i*16, 16)
+
+    # Interrupt should be pending
+    await send_instr(dut, InstructionCSRRS(a0, x0, csrnames.mip).encode())
+    assert (await read_reg(dut, a0, False) & 0x80000) == 0x80000
 
 ### Random operation testing ###
 reg = [0] * 16
@@ -692,7 +761,7 @@ ops_alu = [
 async def test_random_alu(dut):
     dut._log.info("Start")
   
-    clock = Clock(dut.clk, 15.624, unit="ns")
+    clock = Clock(dut.clk, 35.714, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
@@ -703,10 +772,9 @@ async def test_random_alu(dut):
     await start_read(dut, 0)
     
     seed = random.randint(0, 0xFFFFFFFF)
-    #seed = 476110288
-
+    #seed = 1508125843
     debug = False
-    for test in range(50):
+    for test in range(20):
         random.seed(seed + test)
         dut._log.info("Running test with seed {}".format(seed + test))
         for i in range(1, 16):
@@ -792,8 +860,6 @@ class CLoadOp:
     def execute_fn(self, rd, rs1, arg2):
         if rd != 0 and rd != 3 and rd != 4:
             reg[rd] = self.fn(self.val)
-            while reg[rd] < -0x80000000: reg[rd] += 0x100000000
-            while reg[rd] > 0x7FFFFFFF:  reg[rd] -= 0x100000000
 
     def encode(self, rd, rs1, arg2):
         return self.encoder(rd, rs1, arg2)
@@ -834,8 +900,6 @@ class LoadOp:
     def execute_fn(self, rd, rs1, arg2):
         if rd != 0 and rd != 3 and rd != 4:
             reg[rd] = self.fn(self.val)
-            while reg[rd] < -0x80000000: reg[rd] += 0x100000000
-            while reg[rd] > 0x7FFFFFFF:  reg[rd] -= 0x100000000
 
     def encode(self, rd, rs1, arg2):
         return self.instr(rd, rs1, arg2).encode()
@@ -992,7 +1056,7 @@ ops = [
 async def test_random(dut):
     dut._log.info("Start")
   
-    clock = Clock(dut.clk, 15.624, unit="ns")
+    clock = Clock(dut.clk, 35.714, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset

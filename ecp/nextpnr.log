@@ -1,0 +1,507 @@
+Info: Generated random seed: 13185462262107187026
+Info: constraining clock net 'clk' to 40.00 MHz
+
+Info: Logic utilisation before packing:
+Info:     Total LUT4s:      3030/24288    12%
+Info:         logic LUTs:   2762/24288    11%
+Info:         carry LUTs:    268/24288     1%
+Info:           RAM LUTs:      0/ 3036     0%
+Info:          RAMW LUTs:      0/ 6072     0%
+
+Info:      Total DFFs:      1384/24288     5%
+
+Info: Packing IOs..
+Info: $uio[7]$iobuf_i: uio_$_TBUF__Y.Y
+Info: pin 'uio[7]$tr_io' constrained to Bel 'X72/Y32/PIOA'.
+Info: $uio[6]$iobuf_i: uio_$_TBUF__Y_1.Y
+Info: pin 'uio[6]$tr_io' constrained to Bel 'X72/Y35/PIOA'.
+Info: $uio[5]$iobuf_i: uio_$_TBUF__Y_2.Y
+Info: pin 'uio[5]$tr_io' constrained to Bel 'X72/Y35/PIOB'.
+Info: $uio[4]$iobuf_i: uio_$_TBUF__Y_3.Y
+Info: pin 'uio[4]$tr_io' constrained to Bel 'X72/Y38/PIOD'.
+Info: $uio[3]$iobuf_i: uio_$_TBUF__Y_4.Y
+Info: pin 'uio[3]$tr_io' constrained to Bel 'X72/Y41/PIOD'.
+Info: $uio[2]$iobuf_i: uio_$_TBUF__Y_5.Y
+Info: pin 'uio[2]$tr_io' constrained to Bel 'X72/Y44/PIOB'.
+Info: $uio[1]$iobuf_i: uio_$_TBUF__Y_6.Y
+Info: pin 'uio[1]$tr_io' constrained to Bel 'X0/Y38/PIOD'.
+Info: $uio[0]$iobuf_i: uio_$_TBUF__Y_7.Y
+Info: pin 'uio[0]$tr_io' constrained to Bel 'X0/Y35/PIOB'.
+Info: pin 'uo_out[7]$tr_io' constrained to Bel 'X72/Y11/PIOD'.
+Info: pin 'uo_out[6]$tr_io' constrained to Bel 'X72/Y14/PIOA'.
+Info: pin 'uo_out[5]$tr_io' constrained to Bel 'X72/Y20/PIOA'.
+Info: pin 'uo_out[4]$tr_io' constrained to Bel 'X72/Y23/PIOA'.
+Info: pin 'uo_out[3]$tr_io' constrained to Bel 'X72/Y23/PIOC'.
+Info: pin 'uo_out[2]$tr_io' constrained to Bel 'X72/Y26/PIOA'.
+Info: pin 'uo_out[1]$tr_io' constrained to Bel 'X72/Y26/PIOC'.
+Info: pin 'uo_out[0]$tr_io' constrained to Bel 'X11/Y50/PIOA'.
+Info: pin 'ui_in[7]$tr_io' constrained to Bel 'X13/Y50/PIOA'.
+Info: pin 'ui_in[6]$tr_io' constrained to Bel 'X6/Y50/PIOA'.
+Info: pin 'ui_in[5]$tr_io' constrained to Bel 'X11/Y50/PIOB'.
+Info: pin 'ui_in[4]$tr_io' constrained to Bel 'X0/Y14/PIOA'.
+Info: pin 'ui_in[3]$tr_io' constrained to Bel 'X0/Y11/PIOD'.
+Info: pin 'ui_in[2]$tr_io' constrained to Bel 'X0/Y8/PIOA'.
+Info: pin 'ui_in[1]$tr_io' constrained to Bel 'X0/Y5/PIOA'.
+Info: pin 'ui_in[0]$tr_io' constrained to Bel 'X0/Y2/PIOA'.
+Info: pin 'rst_n$tr_io' constrained to Bel 'X0/Y35/PIOA'.
+Info: pin 'clk$tr_io' constrained to Bel 'X0/Y26/PIOC'.
+Info: Packing constants..
+Info: Packing carries...
+Info: Packing LUTs...
+Info: Packing LUT5-7s...
+Info: Packing FFs...
+Info:     473 FFs paired with LUTs.
+Info: Generating derived timing constraints...
+Info: Promoting globals...
+Info:     promoting clock net clk$TRELLIS_IO_IN to global network
+Info: Checksum: 0xafda25f6
+
+Info: Device utilisation:
+Info: 	          TRELLIS_IO:      26/    197    13%
+Info: 	                DCCA:       1/     56     1%
+Info: 	              DP16KD:       0/     56     0%
+Info: 	          MULT18X18D:       1/     28     3%
+Info: 	              ALU54B:       0/     14     0%
+Info: 	             EHXPLLL:       0/      2     0%
+Info: 	             EXTREFB:       0/      1     0%
+Info: 	                DCUA:       0/      1     0%
+Info: 	           PCSCLKDIV:       0/      2     0%
+Info: 	             IOLOGIC:       0/    128     0%
+Info: 	            SIOLOGIC:       0/     69     0%
+Info: 	                 GSR:       0/      1     0%
+Info: 	               JTAGG:       0/      1     0%
+Info: 	                OSCG:       0/      1     0%
+Info: 	               SEDGA:       0/      1     0%
+Info: 	                 DTR:       0/      1     0%
+Info: 	             USRMCLK:       0/      1     0%
+Info: 	             CLKDIVF:       0/      4     0%
+Info: 	           ECLKSYNCB:       0/     10     0%
+Info: 	             DLLDELD:       0/      8     0%
+Info: 	              DDRDLL:       0/      4     0%
+Info: 	             DQSBUFM:       0/      8     0%
+Info: 	     TRELLIS_ECLKBUF:       0/      8     0%
+Info: 	        ECLKBRIDGECS:       0/      2     0%
+Info: 	                DCSC:       0/      2     0%
+Info: 	          TRELLIS_FF:    1384/  24288     5%
+Info: 	        TRELLIS_COMB:    3136/  24288    12%
+Info: 	        TRELLIS_RAMW:       0/   3036     0%
+
+Info: Placed 26 cells based on constraints.
+Info: Creating initial analytic placement for 3003 cells, random placement wirelen = 178908.
+Info:     at initial placer iter 0, wirelen = 2371
+Info:     at initial placer iter 1, wirelen = 1927
+Info:     at initial placer iter 2, wirelen = 1925
+Info:     at initial placer iter 3, wirelen = 1775
+Info: Running main analytical placer, max placement attempts per cell = 2585538.
+Info:     at iteration #1, type ALL: wirelen solved = 1722, spread = 25794, legal = 26963; time = 0.12s
+Info:     at iteration #2, type ALL: wirelen solved = 3438, spread = 19610, legal = 21497; time = 0.12s
+Info:     at iteration #3, type ALL: wirelen solved = 5561, spread = 18363, legal = 19995; time = 0.12s
+Info:     at iteration #4, type ALL: wirelen solved = 6739, spread = 17015, legal = 18658; time = 0.12s
+Info:     at iteration #5, type ALL: wirelen solved = 7787, spread = 17217, legal = 19165; time = 0.12s
+Info:     at iteration #6, type ALL: wirelen solved = 9495, spread = 15975, legal = 17204; time = 0.11s
+Info:     at iteration #7, type ALL: wirelen solved = 9686, spread = 16476, legal = 17539; time = 0.11s
+Info:     at iteration #8, type ALL: wirelen solved = 10636, spread = 14804, legal = 16239; time = 0.11s
+Info:     at iteration #9, type ALL: wirelen solved = 10438, spread = 14511, legal = 16206; time = 0.11s
+Info:     at iteration #10, type ALL: wirelen solved = 10487, spread = 14499, legal = 15702; time = 0.11s
+Info:     at iteration #11, type ALL: wirelen solved = 10823, spread = 14780, legal = 15963; time = 0.11s
+Info:     at iteration #12, type ALL: wirelen solved = 11230, spread = 14065, legal = 15422; time = 0.11s
+Info:     at iteration #13, type ALL: wirelen solved = 11046, spread = 14262, legal = 15632; time = 0.11s
+Info:     at iteration #14, type ALL: wirelen solved = 11410, spread = 14490, legal = 15704; time = 0.11s
+Info:     at iteration #15, type ALL: wirelen solved = 11675, spread = 14338, legal = 15395; time = 0.11s
+Info:     at iteration #16, type ALL: wirelen solved = 11713, spread = 14203, legal = 15342; time = 0.11s
+Info:     at iteration #17, type ALL: wirelen solved = 11725, spread = 14233, legal = 15121; time = 0.11s
+Info:     at iteration #18, type ALL: wirelen solved = 11880, spread = 14288, legal = 15250; time = 0.11s
+Info:     at iteration #19, type ALL: wirelen solved = 12009, spread = 14120, legal = 15027; time = 0.11s
+Info:     at iteration #20, type ALL: wirelen solved = 11948, spread = 14075, legal = 15165; time = 0.11s
+Info:     at iteration #21, type ALL: wirelen solved = 12166, spread = 14393, legal = 15047; time = 0.11s
+Info: HeAP Placer Time: 3.59s
+Info:   of which solving equations: 2.01s
+Info:   of which spreading cells: 0.33s
+Info:   of which strict legalisation: 0.21s
+
+Info: Running simulated annealing placer for refinement.
+Info:   at iteration #1: temp = 0.000000, timing cost = 1306, wirelen = 15027
+Info:   at iteration #5: temp = 0.000000, timing cost = 1231, wirelen = 14027
+Info:   at iteration #10: temp = 0.000000, timing cost = 1044, wirelen = 13681
+Info:   at iteration #15: temp = 0.000000, timing cost = 1065, wirelen = 13508
+Info:   at iteration #19: temp = 0.000000, timing cost = 1038, wirelen = 13467 
+Info: SA placement time 7.48s
+
+Info: Max frequency for clock '$glbnet$clk$TRELLIS_IO_IN': 49.54 MHz (PASS at 40.00 MHz)
+
+Info: Max delay <async>                           -> <async>                          : 14.76 ns
+Info: Max delay <async>                           -> posedge $glbnet$clk$TRELLIS_IO_IN: 9.37 ns
+Info: Max delay <async>                           -> negedge $glbnet$clk$TRELLIS_IO_IN: 7.04 ns
+Info: Max delay posedge $glbnet$clk$TRELLIS_IO_IN -> <async>                          : 25.03 ns
+Info: Max delay negedge $glbnet$clk$TRELLIS_IO_IN -> <async>                          : 10.69 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 10 endpoint(s)
+Info:          + represents [1,10) endpoint(s)
+Info: [  4115,   5122) |*+
+Info: [  5122,   6129) |****************+
+Info: [  6129,   7136) |***************************+
+Info: [  7136,   8143) |********************************+
+Info: [  8143,   9150) |**************************+
+Info: [  9150,  10157) |******+
+Info: [ 10157,  11164) |***+
+Info: [ 11164,  12171) |*+
+Info: [ 12171,  13178) |*+
+Info: [ 13178,  14185) |****+
+Info: [ 14185,  15192) |******+
+Info: [ 15192,  16199) |*************+
+Info: [ 16199,  17206) |*******+
+Info: [ 17206,  18213) |************+
+Info: [ 18213,  19220) |**********+
+Info: [ 19220,  20227) |*****+
+Info: [ 20227,  21234) |************+
+Info: [ 21234,  22241) |*******************************+
+Info: [ 22241,  23248) |******************+
+Info: [ 23248,  24255) |************************************************************ 
+Info: Checksum: 0x1d531978
+Info: Routing globals...
+Info:     routing clock net $glbnet$clk$TRELLIS_IO_IN using global 0
+
+Info: Routing..
+Info: Setting up routing queue.
+Info: Routing 12860 arcs.
+Info:            |   (re-)routed arcs  |   delta    | remaining|       time spent     |
+Info:    IterCnt |  w/ripup   wo/ripup |  w/r  wo/r |      arcs| batch(sec) total(sec)|
+Info:       1000 |      242        757 |  242   757 |     12135|       0.57       0.57|
+Info:       2000 |      563       1436 |  321   679 |     11494|       0.43       1.00|
+Info:       3000 |      940       2059 |  377   623 |     10916|       0.43       1.44|
+Info:       4000 |     1282       2717 |  342   658 |     10333|       0.41       1.85|
+Info:       5000 |     1656       3343 |  374   626 |      9776|       0.41       2.26|
+Info:       6000 |     1953       4046 |  297   703 |      9110|       0.38       2.64|
+Info:       7000 |     2276       4723 |  323   677 |      8470|       0.38       3.02|
+Info:       8000 |     2541       5437 |  265   714 |      7833|       0.34       3.36|
+Info:       9000 |     2825       6093 |  284   656 |      7175|       0.32       3.68|
+Info:      10000 |     3157       6717 |  332   624 |      6618|       0.36       4.04|
+Info:      11000 |     3406       7385 |  249   668 |      5903|       0.34       4.38|
+Info:      12000 |     3719       8023 |  313   638 |      5257|       0.36       4.74|
+Info:      13000 |     3984       8716 |  265   693 |      4586|       0.39       5.13|
+Info:      14000 |     4166       9485 |  182   769 |      3785|       0.35       5.49|
+Info:      15000 |     4341      10243 |  175   758 |      2986|       0.36       5.85|
+Info:      16000 |     4510      11028 |  169   785 |      2204|       0.41       6.26|
+Info:      17000 |     4644      11843 |  134   815 |      1371|       0.48       6.73|
+Info:      18000 |     4779      12633 |  135   790 |       533|       0.41       7.14|
+Info:      18580 |     4821      13034 |   42   401 |         0|       0.23       7.37|
+Info: Routing complete.
+Info: Router1 time 7.37s
+Info: Checksum: 0x5a9fe16b
+
+Info: Critical path report for clock '$glbnet$clk$TRELLIS_IO_IN' (posedge -> posedge):
+Info:       type curr  total name
+Info:   clk-to-q  0.52  0.52 Source i_tinyQV.i_tinyqv.cpu.counter_hi_TRELLIS_FF_Q_1.Q
+Info:    routing  0.80  1.32 Net i_tinyQV.i_tinyqv.cpu.counter[3] (45,18) -> (45,15)
+Info:                          Sink i_tinyQV.debug_uart_tx_busy_LUT4_C_1_Z_LUT4_C_Z_LUT4_D_Z_LUT4_Z_2_B_LUT4_Z.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  1.56 Source i_tinyQV.debug_uart_tx_busy_LUT4_C_1_Z_LUT4_C_Z_LUT4_D_Z_LUT4_Z_2_B_LUT4_Z.F
+Info:    routing  1.39  2.95 Net i_tinyQV.debug_uart_tx_busy_LUT4_C_1_Z_LUT4_C_Z_LUT4_D_Z_LUT4_A_Z_LUT4_Z_C[1] (45,15) -> (48,6)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B_PFUMX_Z_ALUT_LUT4_Z.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  3.19 Source i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B_PFUMX_Z_ALUT_LUT4_Z.F
+Info:    routing  0.00  3.19 Net i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B_PFUMX_Z_ALUT (48,6) -> (48,6)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B_PFUMX_Z_BLUT_LUT4_Z.F1
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:133.22-133.24
+Info:      logic  0.17  3.35 Source i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  0.61  3.96 Net i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1_B[2] (48,6) -> (49,7)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  4.20 Source i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z_LUT4_Z_1.F
+Info:    routing  0.63  4.83 Net i_tinyQV.i_tinyqv.cpu.i_core.i_registers.genblk1[2].genblk1.genblk1.genblk1.gen_reg_normal.is_accessed_LUT4_Z_C_PFUMX_C0_Z[6] (49,7) -> (49,7)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT_S0_LUT4_C_Z_LUT4_Z_2.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  5.06 Source i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT_S0_LUT4_C_Z_LUT4_Z_2.F
+Info:    routing  1.30  6.36 Net i_tinyQV.i_tinyqv.cpu.is_system_LUT4_C_Z_LUT4_D_Z[3] (49,7) -> (50,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a_LUT4_Z_1.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  6.60 Source i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a_LUT4_Z_1.F
+Info:    routing  0.85  7.45 Net i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a[2] (50,14) -> (51,13)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a_MULT18X18D_B0.B2
+Info:                          Defined in:
+Info:                               ../src/tinyQV/cpu/alu.v:100.17-100.18
+Info:      logic  3.93  11.38 Source i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a_MULT18X18D_B0.P0
+Info:    routing  1.34  12.72 Net i_tinyQV.i_tinyqv.cpu.i_core.multiplier.a_MULT18X18D_B0_P0[0] (51,13) -> (51,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0$CCU2_COMB0.B
+Info:                          Defined in:
+Info:                               ../src/tinyQV/cpu/alu.v:107.36-107.83
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/arith_map.v:32.22-32.23
+Info:      logic  0.45  13.16 Source i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0$CCU2_COMB0.FCO
+Info:    routing  0.00  13.16 Net i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0$CCU2_FCI_INT (51,14) -> (51,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0$CCU2_COMB1.FCI
+Info:      logic  0.40  13.56 Source i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0$CCU2_COMB1.F
+Info:    routing  0.73  14.30 Net i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1[0] (51,14) -> (50,12)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B.B
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  14.53 Source i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B.F
+Info:    routing  0.42  14.95 Net i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z[1] (50,12) -> (50,12)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z_LUT4_B.B
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  15.19 Source i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z_LUT4_B.F
+Info:    routing  0.51  15.70 Net i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z_LUT4_B_Z[2] (50,12) -> (51,10)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z_LUT4_B_Z_LUT4_B.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  15.94 Source i_tinyQV.i_tinyqv.cpu.is_auipc_LUT4_B_Z_LUT4_Z_A_CCU2C_S0_S1_LUT4_B_Z_LUT4_B_Z_LUT4_B.F
+Info:    routing  0.43  16.36 Net i_tinyQV.debug_rd_PFUMX_Z_C0[2] (51,10) -> (51,10)
+Info:                          Sink i_tinyQV.debug_rd_PFUMX_Z_ALUT_LUT4_Z.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  16.60 Source i_tinyQV.debug_rd_PFUMX_Z_ALUT_LUT4_Z.F
+Info:    routing  0.00  16.60 Net i_tinyQV.debug_rd_PFUMX_Z_ALUT (51,10) -> (51,10)
+Info:                          Sink i_tinyQV.debug_rd_PFUMX_Z_BLUT_LUT4_Z.F1
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:133.22-133.24
+Info:      logic  0.17  16.76 Source i_tinyQV.debug_rd_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  1.21  17.98 Net i_tinyQV.debug_rd[1] (51,10) -> (52,6)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.i_registers.registers[5]_TRELLIS_FF_Q_DI_LUT4_Z.D
+Info:                          Defined in:
+Info:                               ../src/tinyQV/cpu/tinyqv.v:52.19-52.27
+Info:      logic  0.24  18.21 Source i_tinyQV.i_tinyqv.cpu.i_core.i_registers.registers[5]_TRELLIS_FF_Q_DI_LUT4_Z.F
+Info:    routing  0.13  18.34 Net i_tinyQV.i_tinyqv.cpu.i_core.i_registers.registers[5]_TRELLIS_FF_Q_DI[1] (52,6) -> (52,6)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.i_registers.registers[5]_TRELLIS_FF_Q_2.DI
+Info:      setup  0.00  18.34 Source i_tinyQV.i_tinyqv.cpu.i_core.i_registers.registers[5]_TRELLIS_FF_Q_2.DI
+Info: 7.99 ns logic, 10.35 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> '<async>':
+Info:       type curr  total name
+Info:     source  0.00  0.00 Source ui_in[3]$tr_io.O
+Info:    routing  3.39  3.39 Net ui_in[3]$TRELLIS_IO_IN (0,11) -> (44,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.B
+Info:                          Defined in:
+Info:                               tt_wrapper.v:9.23-9.28
+Info:      logic  0.24  3.63 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.F
+Info:    routing  0.00  3.63 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT (44,14) -> (44,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.F1
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:141.30-141.32
+Info:      logic  0.17  3.79 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  0.00  3.79 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1 (44,14) -> (44,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.FXB
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:141.38-141.40
+Info:      logic  0.24  4.03 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  0.94  4.98 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D0_PFUMX_Z_BLUT_LUT4_Z_D[2] (44,14) -> (40,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  5.21 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.F
+Info:    routing  0.00  5.21 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT (40,14) -> (40,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.F1
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:141.30-141.32
+Info:      logic  0.17  5.38 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  0.00  5.38 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1 (40,14) -> (40,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.FXB
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:141.38-141.40
+Info:      logic  0.24  5.62 Source i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  0.62  6.24 Net i_tinyQV.i_tinyqv.cpu.is_jal_de_LUT4_C_Z[6] (40,14) -> (41,14)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  6.49 Source i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  0.91  7.41 Net i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z[4] (41,14) -> (40,15)
+Info:                          Sink uo_out_L6MUX21_Z_D1_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  7.66 Source uo_out_L6MUX21_Z_D1_L6MUX21_Z_D1_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  0.00  7.66 Net uo_out_L6MUX21_Z_D1_L6MUX21_Z_D1 (40,15) -> (40,15)
+Info:                          Sink uo_out_L6MUX21_Z_D1_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.FXB
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:157.62-157.64
+Info:      logic  0.24  7.90 Source uo_out_L6MUX21_Z_D1_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  0.00  7.90 Net uo_out_L6MUX21_Z_D1 (40,15) -> (40,15)
+Info:                          Sink uo_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.FXB
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:157.70-157.72
+Info:      logic  0.24  8.15 Source uo_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  2.38  10.53 Net uo_out[7]$TRELLIS_IO_OUT (40,15) -> (72,11)
+Info:                          Sink uo_out[7]$tr_io.I
+Info:                          Defined in:
+Info:                               tt_wrapper.v:10.23-10.29
+Info: 2.28 ns logic, 8.24 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> 'posedge $glbnet$clk$TRELLIS_IO_IN':
+Info:       type curr  total name
+Info:     source  0.00  0.00 Source uio[1]$tr_io.O
+Info:    routing  4.20  4.20 Net uio[1]$TRELLIS_IO_IN (0,38) -> (47,26)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.q_ctrl.spi_data_in_LUT4_Z_3.B
+Info:                          Defined in:
+Info:                               tt_wrapper.v:16.16-16.22
+Info:      logic  0.24  4.44 Source i_tinyQV.i_tinyqv.mem.q_ctrl.spi_data_in_LUT4_Z_3.F
+Info:    routing  1.28  5.72 Net i_tinyQV.qspi_data_in_ctrl[0] (47,26) -> (37,26)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.q_ctrl.spi_clk_pos_LUT4_B_Z_LUT4_D.A
+Info:                          Defined in:
+Info:                               ../src/project.v:43.16-43.33
+Info:      logic  0.24  5.95 Source i_tinyQV.i_tinyqv.mem.q_ctrl.spi_clk_pos_LUT4_B_Z_LUT4_D.F
+Info:    routing  0.42  6.37 Net i_tinyQV.i_tinyqv.mem.q_ctrl.stop_txn_reg_TRELLIS_FF_Q_DI_LUT4_Z_C_LUT4_A_C_LUT4_D_Z_PFUMX_Z_3_C0[4] (37,26) -> (37,26)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.q_ctrl.stop_txn_reg_TRELLIS_FF_Q_DI_LUT4_Z_C_LUT4_A_C_LUT4_D_Z_PFUMX_Z_3_BLUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  6.63 Source i_tinyQV.i_tinyqv.mem.q_ctrl.stop_txn_reg_TRELLIS_FF_Q_DI_LUT4_Z_C_LUT4_A_C_LUT4_D_Z_PFUMX_Z_3_BLUT_LUT4_Z.OFX
+Info:    routing  0.46  7.09 Net i_tinyQV.i_tinyqv.mem.q_ctrl.stop_txn_reg_TRELLIS_FF_Q_DI_LUT4_Z_C_LUT4_A_C_LUT4_D_Z[0] (37,26) -> (37,26)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.q_ctrl.data_TRELLIS_FF_Q_7.M
+Info:      setup  0.00  7.09 Source i_tinyQV.i_tinyqv.mem.q_ctrl.data_TRELLIS_FF_Q_7.M
+Info: 0.73 ns logic, 6.36 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> 'negedge $glbnet$clk$TRELLIS_IO_IN':
+Info:       type curr  total name
+Info:     source  0.00  0.00 Source rst_n$tr_io.O
+Info:    routing  3.65  3.65 Net rst_n$TRELLIS_IO_IN (0,35) -> (55,21)
+Info:                          Sink i_tinyQV.i_setup.done_LUT4_D.C
+Info:                          Defined in:
+Info:                               tt_wrapper.v:18.16-18.22
+Info:      logic  0.24  3.89 Source i_tinyQV.i_setup.done_LUT4_D.F
+Info:    routing  0.13  4.02 Net i_tinyQV.rst_reg_n_TRELLIS_FF_Q_DI (55,21) -> (55,21)
+Info:                          Sink i_tinyQV.rst_reg_n_TRELLIS_FF_Q.DI
+Info:      setup  0.00  4.02 Source i_tinyQV.rst_reg_n_TRELLIS_FF_Q.DI
+Info: 0.24 ns logic, 3.78 ns routing
+
+Info: Critical path report for cross-domain path 'posedge $glbnet$clk$TRELLIS_IO_IN' -> '<async>':
+Info:       type curr  total name
+Info:   clk-to-q  0.52  0.52 Source i_tinyQV.i_tinyqv.cpu.counter_hi_TRELLIS_FF_Q_1.Q
+Info:    routing  1.22  1.75 Net i_tinyQV.i_tinyqv.cpu.counter[3] (45,18) -> (48,17)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_Z_C_LUT4_Z_1.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  1.98 Source i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_Z_C_LUT4_Z_1.F
+Info:    routing  0.59  2.58 Net i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_Z_C[2] (48,17) -> (48,17)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_Z.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  2.81 Source i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_Z.F
+Info:    routing  1.21  4.02 Net i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A[3] (48,17) -> (48,12)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_C.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  4.25 Source i_tinyQV.i_tinyqv.cpu.i_core.mepc_TRELLIS_FF_Q_23_DI_LUT4_Z_A_LUT4_C.F
+Info:    routing  1.31  5.56 Net i_tinyQV.i_tinyqv.cpu.i_core.cmp_LUT4_C_1_Z[3] (48,12) -> (43,6)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT_A1_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  5.82 Source i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT_A1_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  1.74  7.55 Net i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT_A1[4] (43,6) -> (48,10)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT$CCU2_COMB1.A
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.45  8.00 Source i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN_CCU2C_COUT$CCU2_COMB1.FCO
+Info:    routing  0.00  8.00 Net i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0_CIN (48,10) -> (48,10)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0$CCU2_COMB0.FCI
+Info:                          Defined in:
+Info:                               ../src/tinyQV/cpu/alu.v:40.22-40.59
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/arith_map.v:74.7-80.4
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_sim.v:82.9-82.13
+Info:      logic  0.44  8.44 Source i_tinyQV.i_tinyqv.cpu.i_core.cy_out_CCU2C_S0$CCU2_COMB0.F
+Info:    routing  0.98  9.43 Net i_tinyQV.i_tinyqv.cpu.i_core.cmp_out_L6MUX21_Z_D0_L6MUX21_Z_SD[6] (48,10) -> (45,11)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.i_core.cmp_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               ../src/tinyQV/cpu/alu.v:40.16-40.19
+Info:      logic  0.26  9.68 Source i_tinyQV.i_tinyqv.cpu.i_core.cmp_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  1.28  10.96 Net i_tinyQV.i_tinyqv.cpu.instr_fetch_running_LUT4_C_Z_PFUMX_Z_BLUT_LUT4_Z_D[4] (45,11) -> (42,15)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.is_jalr_LUT4_B_Z_LUT4_B_Z_LUT4_Z_4.B
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  11.20 Source i_tinyQV.i_tinyqv.cpu.is_jalr_LUT4_B_Z_LUT4_B_Z_LUT4_Z_4.F
+Info:    routing  0.75  11.95 Net i_tinyQV.i_tinyqv.cpu.is_jalr_LUT4_B_Z_LUT4_B_Z[5] (42,15) -> (40,16)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.q_ctrl.is_writing_TRELLIS_FF_Q_DI_LUT4_Z_B_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  12.21 Source i_tinyQV.i_tinyqv.mem.q_ctrl.is_writing_TRELLIS_FF_Q_DI_LUT4_Z_B_LUT4_C_Z_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  1.79  14.00 Net i_tinyQV.i_peripherals.data_ready_r_LUT4_A_B_LUT4_C_Z_LUT4_C_Z_LUT4_Z_1_C[3] (40,16) -> (50,21)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  14.26 Source i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z_LUT4_Z_D_L6MUX21_Z_D1_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  0.41  14.67 Net i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z_LUT4_Z_D[1] (50,21) -> (51,21)
+Info:                          Sink i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z_LUT4_Z.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  14.90 Source i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z_LUT4_Z.F
+Info:    routing  0.43  15.33 Net i_tinyQV.i_tinyqv.mem.continue_txn_LUT4_B_Z_PFUMX_BLUT_Z[4] (51,21) -> (51,21)
+Info:                          Sink i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z_PFUMX_Z_BLUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  15.59 Source i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z_PFUMX_Z_BLUT_LUT4_Z.OFX
+Info:    routing  1.54  17.13 Net i_tinyQV.i_tinyqv.cpu.data_continue_LUT4_D_Z_PFUMX_ALUT_Z[6] (51,21) -> (40,15)
+Info:                          Sink uo_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.M
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.26  17.38 Source uo_out_L6MUX21_Z_D1_L6MUX21_Z_D0_PFUMX_Z_ALUT_LUT4_Z.OFX
+Info:    routing  2.38  19.76 Net uo_out[7]$TRELLIS_IO_OUT (40,15) -> (72,11)
+Info:                          Sink uo_out[7]$tr_io.I
+Info:                          Defined in:
+Info:                               tt_wrapper.v:10.23-10.29
+Info: 4.13 ns logic, 15.63 ns routing
+
+Info: Critical path report for cross-domain path 'negedge $glbnet$clk$TRELLIS_IO_IN' -> '<async>':
+Info:       type curr  total name
+Info:   clk-to-q  0.52  0.52 Source i_tinyQV.rst_reg_n_TRELLIS_FF_Q.Q
+Info:    routing  1.32  1.85 Net i_tinyQV.debug_register_data_TRELLIS_FF_Q_CE_LUT4_Z_C[0] (55,21) -> (53,26)
+Info:                          Sink i_tinyQV.qspi_data_out_LUT4_Z_1_C_LUT4_Z.C
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  2.08 Source i_tinyQV.qspi_data_out_LUT4_Z_1_C_LUT4_Z.F
+Info:    routing  0.87  2.95 Net i_tinyQV.qspi_data_out_LUT4_Z_1_C[4] (53,26) -> (53,23)
+Info:                          Sink i_tinyQV.qspi_data_out_LUT4_Z_1_C_LUT4_D.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  3.19 Source i_tinyQV.qspi_data_out_LUT4_Z_1_C_LUT4_D.F
+Info:    routing  0.53  3.72 Net i_tinyQV.qspi_data_out_LUT4_Z_1_C_LUT4_D_Z[3] (53,23) -> (53,22)
+Info:                          Sink i_tinyQV.qspi_data_out_LUT4_Z_2_D_LUT4_Z.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  3.96 Source i_tinyQV.qspi_data_out_LUT4_Z_2_D_LUT4_Z.F
+Info:    routing  0.82  4.78 Net i_tinyQV.qspi_data_out_LUT4_Z_2_D[2] (53,22) -> (54,22)
+Info:                          Sink i_tinyQV.qspi_data_out_LUT4_Z_2.D
+Info:                          Defined in:
+Info:                               /home/mdb36/oss-cad-suite/lib/../share/yosys/ecp5/cells_map.v:108.23-108.24
+Info:      logic  0.24  5.01 Source i_tinyQV.qspi_data_out_LUT4_Z_2.F
+Info:    routing  3.15  8.16 Net uio_out[2] (54,22) -> (72,44)
+Info:                          Sink uio[2]$tr_io.I
+Info:                          Defined in:
+Info:                               tt_wrapper.v:17.16-17.23
+Info: 1.47 ns logic, 6.69 ns routing
+
+Info: Max frequency for clock '$glbnet$clk$TRELLIS_IO_IN': 54.51 MHz (PASS at 40.00 MHz)
+
+Info: Max delay <async>                           -> <async>                          : 10.53 ns
+Info: Max delay <async>                           -> posedge $glbnet$clk$TRELLIS_IO_IN: 7.09 ns
+Info: Max delay <async>                           -> negedge $glbnet$clk$TRELLIS_IO_IN: 4.02 ns
+Info: Max delay posedge $glbnet$clk$TRELLIS_IO_IN -> <async>                          : 19.76 ns
+Info: Max delay negedge $glbnet$clk$TRELLIS_IO_IN -> <async>                          : 8.16 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 10 endpoint(s)
+Info:          + represents [1,10) endpoint(s)
+Info: [  6656,   7526) |***+
+Info: [  7526,   8396) |*****************+
+Info: [  8396,   9266) |*********************************+
+Info: [  9266,  10136) |******************+
+Info: [ 10136,  11006) |************+
+Info: [ 11006,  11876) |**************************+
+Info: [ 11876,  12746) |****+
+Info: [ 12746,  13616) |*+
+Info: [ 13616,  14486) |*+
+Info: [ 14486,  15356) |****+
+Info: [ 15356,  16226) |******+
+Info: [ 16226,  17096) |**********+
+Info: [ 17096,  17966) |**********+
+Info: [ 17966,  18836) |********+
+Info: [ 18836,  19706) |***********+
+Info: [ 19706,  20576) |*******+
+Info: [ 20576,  21446) |*********+
+Info: [ 21446,  22316) |******************************+
+Info: [ 22316,  23186) |*********************+
+Info: [ 23186,  24056) |************************************************************ 
+
+Info: Program finished normally.

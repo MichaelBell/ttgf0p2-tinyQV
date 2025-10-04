@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_MichaelBell_tinyQV (
+module tt_um_MichaelBell_tinyQV #(parameter CLOCK_MHZ=28) (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path - only some bits used
@@ -17,18 +17,14 @@ module tt_um_MichaelBell_tinyQV (
 );
 
     // Address to peripheral map
-    localparam PERI_NONE = 5'h1F;
-    localparam PERI_GPIO_OUT = 5'h0;
-    localparam PERI_GPIO_IN = 5'h1;
-    localparam PERI_GPIO_OUT_SEL = 5'h3;
-    localparam PERI_UART = 5'h4;
-    localparam PERI_UART_STATUS = 5'h5;
-    localparam PERI_DEBUG_UART = 5'h6;
-    localparam PERI_DEBUG_UART_STATUS = 5'h7;
-    localparam PERI_SPI = 5'h8;
-    localparam PERI_SPI_STATUS = 5'h9;
-    localparam PERI_PWM = 5'hA;
-    localparam PERI_DEBUG = 5'hC;
+    localparam PERI_NONE = 4'h0;
+    localparam PERI_ID = 4'h2;
+    localparam PERI_GPIO_OUT_SEL = 4'h3;
+    localparam PERI_DEBUG_UART = 4'h6;
+    localparam PERI_DEBUG_UART_STATUS = 4'h7;
+    localparam PERI_TIME_LIMIT = 4'hB;
+    localparam PERI_DEBUG = 4'hC;
+    localparam PERI_USER = 4'hF;
 
     // Bidirs are used for SPI interface
     wire [3:0] qspi_data_in = {uio_in[5:4], uio_in[2:1]};
@@ -38,8 +34,9 @@ module tt_um_MichaelBell_tinyQV (
     wire       qspi_flash_select;
     wire       qspi_ram_a_select;
     wire       qspi_ram_b_select;
-    wire       uio_out7;
-    assign uio_out = {uio_out7, qspi_ram_a_select, qspi_data_out[3:2], 
+    wire       audio;
+    wire       audio_select;
+    assign uio_out = {audio_select ? audio : qspi_ram_b_select, qspi_ram_a_select, qspi_data_out[3:2], 
                       qspi_clk_out, qspi_data_out[1:0], qspi_flash_select};
     assign uio_oe = rst_n ? {2'b11, qspi_data_oe[3:2], 1'b1, qspi_data_oe[1:0], 1'b1} : 8'h00;
 
@@ -85,60 +82,40 @@ module tt_um_MichaelBell_tinyQV (
     wire       debug_stop_txn;
     wire [3:0] debug_rd;
 
-    // Peripheral IOs on ui_in and uo_out
-    wire       spi_miso   = ui_in[2];
-    wire       mhz_clk_in = ui_in[3];
-    wire       uart_rxd   = ui_in[7];
-
-    wire       spi_cs;
-    wire       spi_sck;
-    wire       spi_mosi;
-    wire       spi_dc;
-    wire       uart_txd;
-    wire       uart_rts;
     wire       debug_uart_txd;
     wire       debug_signal;
-    reg  [9:0] gpio_out_sel;
-    reg  [7:0] gpio_out;
+    reg  [7:6] gpio_out_sel;
 
-    reg [4:0] connect_peripheral;
-
-    // All transactions to peripherals complete immediately
-    assign data_ready = 1'b1;
+    reg [3:0] connect_peripheral;
 
     // Debug
     reg debug_register_data;
     reg [3:0] debug_rd_r;
 
-    // UART
-    wire uart_tx_busy;
-    wire uart_rx_valid;
-    wire [7:0] uart_rx_data;
-    wire uart_tx_start = write_n != 2'b11 && connect_peripheral == PERI_UART;
-
     // Debug UART - runs fast to reduce the width of the count necessary for the divider!
     wire debug_uart_tx_busy;
     wire debug_uart_tx_start = write_n != 2'b11 && connect_peripheral == PERI_DEBUG_UART;
 
-    // SPI
-    wire spi_start = write_n != 2'b11 && connect_peripheral == PERI_SPI;
-    wire [7:0] spi_data;
-    wire spi_busy;
+    // Time
+    reg [6:2] time_limit;
+    wire time_pulse;
 
-    // PWM
-    wire pwm_out;
+    // Peripherals interface
+    wire [7:0] peri_out;
+    wire [31:0] peri_data_out;
+    wire        peri_data_ready;
+    wire [7:2] peri_interrupts;
 
-    // MTIME
-    reg [2:0] mhz_clk_sync;
-    reg time_pulse;
+    // Peripherals get synchronized ui_in.
+    reg [7:0] ui_in_sync0;
+    reg [7:0] ui_in_sync;
+    always @(posedge clk) begin
+        ui_in_sync0 <= ui_in;
+        ui_in_sync <= ui_in_sync0;
+    end
 
     // Interrupt requests
-    reg [1:0] ui_in_reg;
-    always @(posedge clk) begin
-        ui_in_reg <= ui_in[1:0];
-    end
-    wire [3:0] interrupt_req = {!uart_tx_busy, uart_rx_valid, ui_in_reg[1:0]};
-
+    wire [7:0] interrupt_req = {peri_interrupts, ui_in_sync[1:0]};
     // Register the reset on the negative edge of clock for safety.
     // This also allows the option of async reset in the design, which might be preferable in some cases
     always @(negedge clk) setup_rst_n <= rst_n;
@@ -217,75 +194,76 @@ module tt_um_MichaelBell_tinyQV (
         .debug_rd(debug_rd)
     );
 
-    assign uo_out[0] = gpio_out_sel[0] ? gpio_out[0] : uart_txd;
-    assign uo_out[1] = gpio_out_sel[1] ? gpio_out[1] : uart_rts;
-    assign uo_out[2] = gpio_out_sel[2] ? gpio_out[2] : 
-                       debug_register_data ? debug_rd_r[0] : spi_dc;
-    assign uo_out[3] = gpio_out_sel[3] ? gpio_out[3] : 
-                       debug_register_data ? debug_rd_r[1] : spi_mosi;
-    assign uo_out[4] = gpio_out_sel[4] ? gpio_out[4] : 
-                       debug_register_data ? debug_rd_r[2] : spi_cs;
-    assign uo_out[5] = gpio_out_sel[5] ? gpio_out[5] : 
-                       debug_register_data ? debug_rd_r[3] : spi_sck;
-    assign uo_out[6] = gpio_out_sel[6] ? gpio_out[6] : debug_uart_txd;
-    assign uo_out[7] = gpio_out_sel[8] ? pwm_out :
-                       gpio_out_sel[7] ? gpio_out[7] : debug_signal;
-    assign uio_out7 = gpio_out_sel[9] ? pwm_out : qspi_ram_b_select;
+    assign uo_out[0] = peri_out[0];
+    assign uo_out[1] = peri_out[1];
+    assign uo_out[2] = debug_register_data ? debug_rd_r[0] : peri_out[2];
+    assign uo_out[3] = debug_register_data ? debug_rd_r[1] : peri_out[3];
+    assign uo_out[4] = debug_register_data ? debug_rd_r[2] : peri_out[4];
+    assign uo_out[5] = debug_register_data ? debug_rd_r[3] : peri_out[5];
+    assign uo_out[6] = gpio_out_sel[6] ? peri_out[6] : debug_uart_txd;
+    assign uo_out[7] = gpio_out_sel[7] ? peri_out[7] : debug_signal;
+
+    tinyQV_peripherals #(.CLOCK_MHZ(CLOCK_MHZ)) i_peripherals (
+        .clk(clk),
+        .rst_n(rst_reg_n),
+
+        .ui_in(ui_in_sync),
+        .ui_in_raw(ui_in),
+        .uo_out(peri_out),
+
+        .audio(audio),
+        .audio_select(audio_select),
+
+        .addr_in(addr[10:0]),
+        .data_in(data_to_write),
+
+        .data_write_n(write_n),
+        .data_read_n(read_n),
+
+        .data_out(peri_data_out),
+        .data_ready(peri_data_ready),
+
+        .data_read_complete(read_complete),
+
+        .user_interrupts(peri_interrupts)
+    );
 
     always @(*) begin
-        if ({addr[27:7], addr[1:0]} == 23'h400000) 
-            connect_peripheral = addr[6:2];
+        if ({addr[27:6], addr[1:0]} == 24'h800000) 
+            connect_peripheral = addr[5:2];
+        else if (addr[27:11] == 17'h10000)
+            connect_peripheral = PERI_USER;
         else
             connect_peripheral = PERI_NONE;
     end
 
     // Read data
     always @(*) begin
-            case (connect_peripheral)
-                PERI_GPIO_OUT:    data_from_read = {24'h0, uo_out};
-                PERI_GPIO_IN:     data_from_read = {24'h0, ui_in};
-                PERI_GPIO_OUT_SEL:data_from_read = {22'h0, gpio_out_sel};
-                PERI_UART:        data_from_read = {24'h0, uart_rx_data};
-                PERI_UART_STATUS: data_from_read = {30'h0, uart_rx_valid, uart_tx_busy};
-                PERI_DEBUG_UART_STATUS: data_from_read = {31'h0, debug_uart_tx_busy};
-                PERI_SPI:         data_from_read = {24'h0, spi_data};
-                PERI_SPI_STATUS:  data_from_read = {31'h0, spi_busy};
-                default:          data_from_read = 32'hFFFF_FFFF;
-            endcase
+        case (connect_peripheral)
+            PERI_ID:          data_from_read = "GF.2";
+            PERI_GPIO_OUT_SEL:data_from_read = {24'h0, gpio_out_sel, 6'h0};
+            PERI_DEBUG_UART_STATUS: data_from_read = {31'h0, debug_uart_tx_busy};
+            PERI_TIME_LIMIT:  data_from_read = {25'h0, time_limit, 2'b11};
+            PERI_USER:        data_from_read = peri_data_out;
+            default:          data_from_read = 32'hFFFF_FFFF;
+        endcase
     end
+
+    assign data_ready = (connect_peripheral == PERI_USER) ? peri_data_ready : 1'b1;
 
     // GPIO Out
     always @(posedge clk) begin
         if (!rst_reg_n) begin
-            gpio_out_sel <= {2'b00, !ui_in[0], 7'b0000000};
-            gpio_out <= 0;
+            gpio_out_sel <= {!ui_in[0], 1'b0};
+            time_limit <= (CLOCK_MHZ / 4 - 1);
         end
         if (write_n != 2'b11) begin
-            if (connect_peripheral == PERI_GPIO_OUT) gpio_out <= data_to_write[7:0];
-            if (connect_peripheral == PERI_GPIO_OUT_SEL) gpio_out_sel <= data_to_write[9:0];
+            if (connect_peripheral == PERI_GPIO_OUT_SEL) gpio_out_sel <= data_to_write[7:6];
+            if (connect_peripheral == PERI_TIME_LIMIT) time_limit <= data_to_write[6:2];
         end
     end
 
-    uart_tx #(.CLK_HZ(28_000_000), .BIT_RATE(115_200)) i_uart_tx(
-        .clk(clk),
-        .resetn(rst_reg_n),
-        .uart_txd(uart_txd),
-        .uart_tx_en(uart_tx_start),
-        .uart_tx_data(data_to_write[7:0]),
-        .uart_tx_busy(uart_tx_busy) 
-    );
-
-    uart_rx #(.CLK_HZ(28_000_000), .BIT_RATE(115_200)) i_uart_rx(
-        .clk(clk),
-        .resetn(rst_reg_n),
-        .uart_rxd(uart_rxd),
-        .uart_rts(uart_rts),
-        .uart_rx_read(connect_peripheral == PERI_UART && read_complete),
-        .uart_rx_valid(uart_rx_valid),
-        .uart_rx_data(uart_rx_data) 
-    );
-
-    uart_tx #(.CLK_HZ(28_000_000), .BIT_RATE(2_000_000)) i_debug_uart_tx(
+    uart_tx #(.CLK_HZ(CLOCK_MHZ * 1_000_000), .BIT_RATE(4_000_000)) i_debug_uart_tx(
         .clk(clk),
         .resetn(rst_reg_n),
         .uart_txd(debug_uart_txd),
@@ -294,53 +272,23 @@ module tt_um_MichaelBell_tinyQV (
         .uart_tx_busy(debug_uart_tx_busy) 
     );
 
-    spi_ctrl i_spi(
-        .clk(clk),
-        .rstn(rst_reg_n),
-
-        .spi_miso(spi_miso),
-        .spi_select(spi_cs),
-        .spi_clk_out(spi_sck),
-        .spi_mosi(spi_mosi),
-        .spi_dc(spi_dc),
-
-        .dc_in(data_to_write[9]),
-        .end_txn(data_to_write[8]),
-        .data_in(data_to_write[7:0]),
-        .start(spi_start),
-        .data_out(spi_data),
-        .busy(spi_busy),
-
-        .set_config(connect_peripheral == PERI_SPI_STATUS && write_n != 2'b11),
-        .divider_in(data_to_write[3:0]),
-        .read_latency_in(data_to_write[8])
-    );
-
-    pwm_ctrl i_pwm(
-        .clk(clk),
-        .rstn(rst_reg_n),
-
-        .pwm(pwm_out),
-
-        .level(data_to_write[7:0]),
-        .set_level(connect_peripheral == PERI_PWM && write_n != 2'b11)
-    );
+    reg [6:0] time_count;
 
     always @(posedge clk) begin
         if (!rst_reg_n) begin
-            time_pulse <= 0;
-            mhz_clk_sync <= 0;
+            time_count <= 0;
         end else begin
-            time_pulse <= mhz_clk_sync[1] && !mhz_clk_sync[2];
-            mhz_clk_sync <= {mhz_clk_sync[1:0], mhz_clk_in};
+            if (time_pulse) time_count <= 0;
+            else time_count <= time_count + 1;
         end
     end
+    assign time_pulse = time_count == {time_limit, 2'b11};
 
     // Debug
     always @(posedge clk) begin
         if (!rst_reg_n)
             debug_register_data <= ui_in[1];
-        else if (connect_peripheral == PERI_DEBUG)
+        else if (write_n != 2'b11 && connect_peripheral == PERI_DEBUG)
             debug_register_data <= data_to_write[0];
     end
 
@@ -370,6 +318,6 @@ module tt_um_MichaelBell_tinyQV (
     assign debug_signal = debug_signals[ui_in[6:3]];
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, uio_in[7:6], uio_in[3], uio_in[0], 1'b0};
+    wire _unused = &{ena, uio_in[7:6], uio_in[3], uio_in[0], read_complete, 1'b0};
 
 endmodule
