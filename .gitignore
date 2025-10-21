@@ -1,6 +1,7 @@
 .DS_Store
 .idea
 *.vcd
+*.fst
 runs
 tt_submission
 src/user_config.json
@@ -9,5 +10,7 @@ test/sim_build
 test/user_peripherals/__pycache__/
 test/user_peripherals/*/__pycache__/
 test/__pycache__/
-test/results.xml
+test/*results.xml
+test/peri-*.xml
 test/gate_level_netlist.v
+gds_render*

@@ -13,7 +13,7 @@
 
   "//": "PL_TARGET_DENSITY_PCT - You can increase this if Global Placement fails with error GPL-0302.",
   "//": "Users have reported that values up to 80 worked well for them.",
-  "PL_TARGET_DENSITY_PCT": 70,
+  "PL_TARGET_DENSITY_PCT": 60,
 
   "//": "CLOCK_PERIOD - Increase this in case you are getting setup time violations.",
   "//": "The value is in nanoseconds, so 20ns == 50MHz.",
@@ -52,7 +52,7 @@
     "gf180mcu_fd_ip_sram__sram512x8m8wm1": {
       "instances": {
         "i_tinyqv.cpu.i_scratch.i_sram": {
-          "location": [1007.36, 251.98],
+          "location": [1006.36, 251.98],
           "orientation": "N"
         }
       },
@@ -75,7 +75,7 @@
   "FP_PDN_HORIZONTAL_LAYER": "Metal3",
   "FP_MACRO_HORIZONTAL_HALO": "3",
   "FP_MACRO_VERTICAL_HALO": "0",
-  "FP_PDN_VOFFSET": "36.65",
+  "FP_PDN_VOFFSET": "35.65",
   "FP_PDN_VPITCH": 38.73,
 
   "//": "SRAM macro doesn't pass DRC",
@@ -98,7 +98,7 @@
   "TOP_MARGIN_MULT": 1,
   "BOTTOM_MARGIN_MULT": 1,
   "LEFT_MARGIN_MULT": 6,
-  "RIGHT_MARGIN_MULT": 3,
+  "RIGHT_MARGIN_MULT": 5,
 
   "//": "Absolute die size",
   "FP_SIZING": "absolute",

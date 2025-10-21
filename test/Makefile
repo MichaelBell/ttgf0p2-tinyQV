@@ -1,50 +1,51 @@
-# Makefile
-# See https://docs.cocotb.org/en/stable/quickstart.html for more info
+USER_PERIPHERAL_2 = uart
+USER_PERIPHERAL_3 = game_pmod
+USER_PERIPHERAL_4 = pulse_transmitter.test
+USER_PERIPHERAL_5 = # pwl_synth.test
+USER_PERIPHERAL_6 = CORDIC.test_trigonometric_simple \
+					 CORDIC.test_linear_simple \
+					 CORDIC.test_hyperbolic_vectoring_square_vis \
+					 CORDIC.test_hyperbolic_vectoring_simple \
+					 CORDIC.test_hyperbolic_rotating_sweep_and_vis \
+					 CORDIC.test_hyperbolic_rotating_simple \
+					 CORDIC.test_circular_rotating_sweep_and_vis
+USER_PERIPHERAL_7 = tqvp_laurie_dwarf_line_table_accelerator.test
+USER_PERIPHERAL_8 = spi
+USER_PERIPHERAL_9 = ubcd.test
+USER_PERIPHERAL_10 = matt_pwm.test
 
-# defaults
-SIM ?= icarus
-TOPLEVEL_LANG ?= verilog
-WAVES ?= 1
-SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v peri*.v tinyQV/cpu/*.v tinyQV/peri/uart/*.v user_peripherals/*.v user_peripherals/*/*.v 
+expand_tests = $(foreach num,$(1),$(USER_PERIPHERAL_$(num)))
+PERI_NUMBERS = $(shell seq 2 10)
+ALL_TESTS = $(call expand_tests,$(PERI_NUMBERS))
 
-# Local copy of sram test verilog
-VERILOG_SOURCES += gf180mcu_fd_ip_sram__sram512x8m8wm1.v
+.PHONY: clean core prog peri_test_% peri_num_% $(ALL_TESTS)
 
-ifneq ($(GATES),yes)
+%-results.xml:
+	@make -f test_$*.mk clean
+	make -f test_$*.mk
+	@mv results.xml $@
+	@mv sim_build/rtl/tb*.fst $*-rtl.fst || true
+	@mv sim_build/gl/tb*.fst $*-gl.fst || true
 
-# RTL simulation:
-SIM_BUILD				= sim_build/rtl
-VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(PROJECT_SOURCES))
-COMPILE_ARGS            += -DSIM
-COMPILE_ARGS            += -I$(SRC_DIR)
+peri-%.xml:
+	@make -f test_basic.mk clean
+	COCOTB_TEST_MODULES=user_peripherals.$* make -f test_basic.mk || true
+	@if [ ! -f results.xml ]; then echo '<failure message="$* failed (crashed)" />' > results.xml; fi
+	@mv results.xml $@
+	@mv sim_build/rtl/tb.fst $*-rtl.fst || true
+	@mv sim_build/gl/tb.fst $*-gl.fst || true
 
-else
+$(ALL_TESTS): %: peri-%.xml
 
-# Gate level simulation:
-SIM_BUILD				= sim_build/gl
-COMPILE_ARGS    += -DGL_TEST
-COMPILE_ARGS    += -DFUNCTIONAL
-COMPILE_ARGS    += -DUSE_POWER_PINS
-COMPILE_ARGS    += -DSIM
-COMPILE_ARGS    += -DUNIT_DELAY=\#1
-VERILOG_SOURCES += $(PDK_ROOT)/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu7t5v0/verilog/primitives.v
-VERILOG_SOURCES += $(PDK_ROOT)/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu7t5v0/verilog/gf180mcu_fd_sc_mcu7t5v0.v
+clean:
+	rm *results.xml peri-*.xml *.fst sim_build/rtl/tb.fst sim_build/gl/tb.fst || true
 
-# this gets copied in by the GDS action workflow
-VERILOG_SOURCES += $(PWD)/gate_level_netlist.v
+core: clean basic-results.xml
+	@cat *results.xml > results.xml
 
-endif
+prog: clean prog-results.xml
+	@cat *results.xml > results.xml
 
-# Allow sharing configuration between design and testbench via `include`:
-COMPILE_ARGS 		+= -I$(SRC_DIR)
-
-# Include the testbench sources:
-VERILOG_SOURCES += $(PWD)/tb.v
-TOPLEVEL = tb
-
-# List test modules to run, separated by commas and without the .py suffix:
-COCOTB_TEST_MODULES = test
-
-# include cocotb's make rules to take care of the simulator setup
-include $(shell cocotb-config --makefiles)/Makefile.sim
+.SECONDEXPANSION:
+peri_num_%: clean $$(call expand_tests,%)
+	@if [ "$(USER_PERIPHERAL_$*)" != "" ]; then cat peri-*.xml; else echo '<testsuites name="results" />'; fi > results.xml
