@@ -860,6 +860,7 @@ class CLoadOp:
     def execute_fn(self, rd, rs1, arg2):
         if rd != 0 and rd != 3 and rd != 4:
             reg[rd] = self.fn(self.val)
+            if reg[rd] > 0x7FFFFFFF:  reg[rd] -= 0x100000000
 
     def encode(self, rd, rs1, arg2):
         return self.encoder(rd, rs1, arg2)
@@ -900,6 +901,7 @@ class LoadOp:
     def execute_fn(self, rd, rs1, arg2):
         if rd != 0 and rd != 3 and rd != 4:
             reg[rd] = self.fn(self.val)
+            if reg[rd] > 0x7FFFFFFF:  reg[rd] -= 0x100000000
 
     def encode(self, rd, rs1, arg2):
         return self.instr(rd, rs1, arg2).encode()
@@ -1067,7 +1069,7 @@ async def test_random(dut):
     await start_read(dut, 0)
 
     seed = random.randint(0, 0xFFFFFFFF)
-    #seed = 3287254906
+    #seed = 2911169147
 
     scratch_ram = True
     if scratch_ram:
