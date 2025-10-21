@@ -1,7 +1,7 @@
 USER_PERIPHERAL_2 = uart
 USER_PERIPHERAL_3 = game_pmod
 USER_PERIPHERAL_4 = pulse_transmitter.test
-USER_PERIPHERAL_5 = # pwl_synth.test
+USER_PERIPHERAL_5 = pwl_synth.test
 USER_PERIPHERAL_6 = CORDIC.test_trigonometric_simple \
 					 CORDIC.test_linear_simple \
 					 CORDIC.test_hyperbolic_vectoring_square_vis \
