@@ -1,4 +1,4 @@
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import ClockCycles, Timer
 
 from riscvmodel.insn import *
 from riscvmodel.regnames import x0, tp, a0, a1
@@ -35,6 +35,9 @@ class TinyQV:
         await test_util.set_all_outputs_to_peripheral(self.dut, self.peripheral_num)
 
         await test_util.start_nops(self.dut)
+
+    async def terminate(self):
+        await test_util.stop_nops()
 
     # Write a value to a byte register in your design
     # reg is the address of the register in the range 0-15

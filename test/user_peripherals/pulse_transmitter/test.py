@@ -12,7 +12,7 @@ from tqv import TinyQV
 # When submitting your design, change this to the peripheral number
 # in peripherals.v.  e.g. if your design is i_user_peri05, set this to 5.
 # The peripheral number is not used by the test harness.
-PERIPHERAL_NUM = 11
+PERIPHERAL_NUM = 4
 
 MAX_DURATION = 255 # max duration you can put in the duration field
 
@@ -32,7 +32,7 @@ class Device:
     
     async def init(self):
         # We target the clock period to 15.625 ns (64 MHz)
-        clock = Clock(self.dut.clk, 15, units="ns")  # test at 66 MHz, close enough to 64MHz
+        clock = Clock(self.dut.clk, 41, unit="ns")  # test at 66 MHz, close enough to 64MHz
         cocotb.start_soon(clock.start())
 
         # Interact with your design's registers through this TinyQV class.
@@ -44,6 +44,9 @@ class Device:
 
         # Reset
         await self.tqv.reset()
+
+    async def terminate(self):
+        await self.tqv.terminate()
          
     # only sets the member variables, does not actually write to the device
     def reset_config(self):
@@ -353,7 +356,7 @@ class Device:
         cocotb.start_soon(self.start_program()) #await self.start_program()
 
         # Wait until valid output goes high
-        while(self.dut.uo_out[1].value == 0):
+        while(self.dut.uo_out.value[1] == 0):
             await ClockCycles(self.dut.clk, 1)
 
         #await RisingEdge(self.dut.test_harness.user_peripheral.valid_output)
@@ -385,7 +388,7 @@ class Device:
                 expected_level = waveform[internal_program_counter >> 1][1]
 
                 for i in range(duration): # check every cycle for thoroughness
-                    assert self.dut.uo_out[5].value == expected_level
+                    assert self.dut.uo_out.value[5] == expected_level
                     await ClockCycles(self.dut.clk, 1) 
             else:
                 assert internal_program_counter < waveform_len # make sure don't access out of bounds
@@ -393,7 +396,7 @@ class Device:
                 expected_level = waveform[internal_program_counter * 2][1]
 
                 for i in range(duration): # check every cycle for thoroughness
-                    assert self.dut.uo_out[5].value == expected_level
+                    assert self.dut.uo_out.value[5] == expected_level
                     await ClockCycles(self.dut.clk, 1) 
 
                 assert internal_program_counter < waveform_len # make sure don't access out of bounds
@@ -401,7 +404,7 @@ class Device:
                 expected_level = waveform[internal_program_counter * 2 + 1][1]
 
                 for i in range(duration): # check every cycle for thoroughness
-                    assert self.dut.uo_out[5].value == expected_level
+                    assert self.dut.uo_out.value[5] == expected_level
                     await ClockCycles(self.dut.clk, 1) 
                     
             if(internal_program_counter == self.config_program_end_index):
@@ -437,7 +440,7 @@ class Device:
                 total_duration += duration
 
             for i in range(total_duration):
-                assert self.dut.uo_out[5].value == (self.config_idle_level ^ self.config_invert_output)
+                assert self.dut.uo_out.value[5] == (self.config_idle_level ^ self.config_invert_output)
                 await ClockCycles(self.dut.clk, 1)
 
 
@@ -471,6 +474,8 @@ async def encoded_1bpe_test1(dut):
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
 
+    await device.terminate()
+
 # Simulate Pulse Distance Encoding
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def encoded_1bpe_test2(dut):
@@ -500,6 +505,8 @@ async def encoded_1bpe_test2(dut):
 
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
+
+    await device.terminate()
 
 # Simulate Pulse Distance Encoding, with initial long header pulse
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -536,6 +543,8 @@ async def encoded_1bpe_test3(dut):
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
 
+    await device.terminate()
+
 # Simulate Pulse Width Encoding
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def encoded_1bpe_test4(dut):
@@ -563,6 +572,8 @@ async def encoded_1bpe_test4(dut):
 
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
+
+    await device.terminate()
 
 # Simulate Manchester Encoding
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -594,6 +605,8 @@ async def encoded_1bpe_test5(dut):
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
 
+    await device.terminate()
+
 # Simulate WS2812B timings to display cyan colour
 # There are different timings online, so I just settled on this:
 # T0H -> 350 ns
@@ -624,6 +637,8 @@ async def encoded_1bpe_test6(dut):
 
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
+
+    await device.terminate()
 
 # Simulate WS2812B timings, with down counting, and loop. To repeat the colour on multiple pixels.
 # There are different timings online, so I just settled on this:
@@ -660,6 +675,8 @@ async def encoded_1bpe_test7(dut):
 
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
+
+    await device.terminate()
 
 # 1BPE test with rollover / wrapping, with auxillary prescaler and auxillary duration
 # It starts at config_program_start_index, rolls over, once it reaches config_program_end_index,
@@ -700,6 +717,8 @@ async def encoded_1bpe_test8(dut):
     await device.write_program_1bpe(program)
     await device.test_expected_waveform_1bpe(program)
 
+    await device.terminate()
+
 # Basic test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test1(dut):
@@ -715,6 +734,8 @@ async def basic_2bpe_test1(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test2(dut):
@@ -729,6 +750,8 @@ async def basic_2bpe_test2(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -747,6 +770,8 @@ async def basic_2bpe_test3(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test with output inverted
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -767,6 +792,8 @@ async def basic_2bpe_test4(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test5(dut):
@@ -785,6 +812,8 @@ async def basic_2bpe_test5(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test6(dut):
@@ -798,6 +827,8 @@ async def basic_2bpe_test6(dut):
     
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test with idle level
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -813,6 +844,8 @@ async def basic_2bpe_test7(dut):
     
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -833,6 +866,8 @@ async def basic_2bpe_test8(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test9(dut):
@@ -852,6 +887,8 @@ async def basic_2bpe_test9(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test with bigger prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test10(dut):
@@ -870,6 +907,8 @@ async def basic_2bpe_test10(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test to test that config_program_end_index is respected
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -893,6 +932,8 @@ async def basic_2bpe_test11(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test to test that config_program_start_index is respected
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test12(dut):
@@ -911,6 +952,8 @@ async def basic_2bpe_test12(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test rollover / wrapping test
 # It starts at config_program_start_index, rolls over, 
@@ -942,6 +985,8 @@ async def basic_2bpe_test13(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test MAX_PROGRAM_2BPE_LEN number of symbols
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def basic_2bpe_test14(dut):
@@ -967,6 +1012,8 @@ async def basic_2bpe_test14(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Basic test MAX_PROGRAM_2BPE_LEN number of symbols with prescaler
 @cocotb.test(timeout_time=11, timeout_unit="ms")
@@ -995,6 +1042,8 @@ async def basic_2bpe_test15(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test with infinite loop
 @cocotb.test(timeout_time=11, timeout_unit="ms")
 async def basic_2bpe_test16(dut):
@@ -1015,6 +1064,8 @@ async def basic_2bpe_test16(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Basic test with MAX_DURATION
 @cocotb.test(timeout_time=11, timeout_unit="ms")
 async def basic_2bpe_test17(dut):
@@ -1032,6 +1083,8 @@ async def basic_2bpe_test17(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 
 # Advanced test with looping a certain number of counts
@@ -1053,6 +1106,8 @@ async def advanced_2bpe_test1(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping a certain number of counts
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test2(dut):
@@ -1071,6 +1126,8 @@ async def advanced_2bpe_test2(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1091,6 +1148,8 @@ async def advanced_2bpe_test3(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping MAX_PROGRAM_LOOP_LEN times
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test4(dut):
@@ -1109,6 +1168,8 @@ async def advanced_2bpe_test4(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1129,6 +1190,8 @@ async def advanced_2bpe_test5(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping a certain number of counts
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test6(dut):
@@ -1147,6 +1210,8 @@ async def advanced_2bpe_test6(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1167,6 +1232,8 @@ async def advanced_2bpe_test7(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping MAX_PROGRAM_LOOP_LEN times
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test8(dut):
@@ -1185,6 +1252,8 @@ async def advanced_2bpe_test8(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1206,6 +1275,8 @@ async def advanced_2bpe_test9(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test10(dut):
@@ -1225,6 +1296,8 @@ async def advanced_2bpe_test10(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1246,6 +1319,8 @@ async def advanced_2bpe_test11(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping MAX_PROGRAM_LOOP_LEN times with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test12(dut):
@@ -1265,6 +1340,8 @@ async def advanced_2bpe_test12(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1286,6 +1363,8 @@ async def advanced_2bpe_test13(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test14(dut):
@@ -1305,6 +1384,8 @@ async def advanced_2bpe_test14(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts with prescaler
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1326,6 +1407,8 @@ async def advanced_2bpe_test15(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping MAX_PROGRAM_LOOP_LEN times
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def advanced_2bpe_test16(dut):
@@ -1344,6 +1427,8 @@ async def advanced_2bpe_test16(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a certain number of counts, with MAX_PROGRAM_2BPE_LEN number of symbols
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1372,6 +1457,8 @@ async def advanced_2bpe_test17(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with looping a certain number of counts, with MAX_PROGRAM_2BPE_LEN number of symbols
 @cocotb.test(timeout_time=15, timeout_unit="ms")
 async def advanced_2bpe_test18(dut):
@@ -1398,6 +1485,8 @@ async def advanced_2bpe_test18(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with looping a MAX_PROGRAM_LOOP_LEN times, with MAX_PROGRAM_2BPE_LEN number of symbols
 @cocotb.test(timeout_time=15, timeout_unit="ms")
@@ -1426,6 +1515,8 @@ async def advanced_2bpe_test19(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with auxillary duration
 @cocotb.test(timeout_time=15, timeout_unit="ms")
 async def advanced_2bpe_test20(dut):
@@ -1446,6 +1537,8 @@ async def advanced_2bpe_test20(dut):
      
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Advanced test with auxillary duration and auxillary prescaler
 @cocotb.test(timeout_time=15, timeout_unit="ms")
@@ -1469,6 +1562,8 @@ async def advanced_2bpe_test21(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Advanced test with auxillary duration and larger auxillary prescaler
 @cocotb.test(timeout_time=15, timeout_unit="ms")
 async def advanced_2bpe_test22(dut):
@@ -1491,6 +1586,8 @@ async def advanced_2bpe_test22(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Elite test with looping and config_program_loopback_index set to exactly the (len(program) - 1) * 2
 # So it should run from 0 to (len(program) - 1) * 2, then the last symbol is repeatedly sent
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1511,6 +1608,8 @@ async def elite_2bpe_test1(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Elite test with looping and config_program_loopback_index set to exactly the (len(program) - 2) * 2
 # So it should run from 0 to (len(program) - 1) * 2 then the last 2 symbols is repeatedly sent
@@ -1533,6 +1632,8 @@ async def elite_2bpe_test2(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Elite test with looping and config_program_loopback_index set to exactly to 1 * 2
 # So it should run from 0 to (len(program) - 1) * 2, then the last len(program) - 1 number of symbols is repeatedly sent
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1553,6 +1654,8 @@ async def elite_2bpe_test3(dut):
 
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
+
+    await device.terminate()
 
 # Elite test with looping and config_program_loopback_index set to exactly the (len(program) - 1) * 2, with MAX_PROGRAM_2BPE_LEN number of symbols
 # So it should run from 0 to (len(program) - 1) * 2, then the last symbol is repeatedly sent
@@ -1583,6 +1686,8 @@ async def elite_2bpe_test4(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Elite test with looping and config_program_loopback_index set to exactly the (len(program) - 2) * 2, with MAX_PROGRAM_2BPE_LEN number of symbols
 # So it should run from 0 to (len(program) - 1) * 2 then the last 2 symbols is repeatedly sent
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1612,6 +1717,8 @@ async def elite_2bpe_test5(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
  
+    await device.terminate()
+
 
 # Elite test with rollover / wrapping, with auxillary prescaler and auxillary duration
 # It starts at config_program_start_index, rolls over,
@@ -1646,6 +1753,8 @@ async def elite_2bpe_test6(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Elite test with rollover / wrapping, with auxillary prescaler and auxillary duration
 # It starts at config_program_start_index, rolls over,
 # and terminates at config_program_end_index without looping
@@ -1679,6 +1788,8 @@ async def elite_2bpe_test7(dut):
     await device.write_program_2bpe(program)
     await device.test_expected_waveform_2bpe(program)
 
+    await device.terminate()
+
 # Interrupt disable test - do not enable interrupts,
 # but we loop, have program counter past 64
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1706,6 +1817,8 @@ async def interrupt_2bpe_test1(dut):
     await device.test_expected_waveform_2bpe(program)
 
     assert not await device.tqv.is_interrupt_asserted()
+
+    await device.terminate()
 
 # Program end interrupt test, using 8 bit write to clear
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1746,6 +1859,8 @@ async def interrupt_2bpe_test2(dut):
 
     assert not await device.tqv.is_interrupt_asserted()
 
+    await device.terminate()
+
 # Program end interrupt test using 32 bit write to clear
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def interrupt_2bpe_test3(dut):
@@ -1784,6 +1899,8 @@ async def interrupt_2bpe_test3(dut):
         clear_program_counter_mid_interrupt = 0
     )
     assert not await device.tqv.is_interrupt_asserted()
+
+    await device.terminate()
 
 # Loop interrupt test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
@@ -1824,6 +1941,8 @@ async def interrupt_2bpe_test4(dut):
 
     assert not await device.tqv.is_interrupt_asserted()
 
+    await device.terminate()
+
 # Timer interrupt test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def interrupt_2bpe_test5(dut):
@@ -1858,6 +1977,8 @@ async def interrupt_2bpe_test5(dut):
 
     assert not await device.tqv.is_interrupt_asserted()
  
+    await device.terminate()
+
 # Program counter mid interrupt test
 @cocotb.test(timeout_time=2, timeout_unit="ms")
 async def interrupt_2bpe_test6(dut):

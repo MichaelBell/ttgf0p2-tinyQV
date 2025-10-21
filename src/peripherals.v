@@ -197,8 +197,8 @@ module tinyQV_peripherals #(parameter CLOCK_MHZ=64) (
         case (audio_func_sel[1:0])
             2'b00: audio <= uo_out_from_user_peri[5][7];   // PWL synth right
             2'b01: audio <= uo_out_from_user_peri[4][7];   // Pulse TX
-            2'b10: audio <= uo_out_from_simple_peri[2][0];  // AY-8913
-            2'b11: audio <= uo_out_from_simple_peri[3][7];  // Matt PWM
+            2'b10: audio <= uo_out_from_simple_peri[3][0];  // AY-8913
+            2'b11: audio <= uo_out_from_simple_peri[2][7];  // Matt PWM
         endcase
     end
 

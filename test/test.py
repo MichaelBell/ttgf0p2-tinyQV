@@ -389,7 +389,7 @@ async def test_pwm(dut, pwm_value, pwm_strobe):
         assert dut.uio_out.value[7] == 0, f"failed on cycle {i}"
         await ClockCycles(dut.clk, pwm_strobe)
 
-@cocotb.test()
+@cocotb.test(timeout_time=2, timeout_unit="ms")
 async def test_audio(dut):
     dut._log.info("Start")
 
@@ -409,7 +409,7 @@ async def test_audio(dut):
     
     for pwm in (5, 23, 57, 240):
         await send_instr(dut, InstructionADDI(x1, x0, pwm).encode())
-        await send_instr(dut, InstructionSB(tp, x1, 0x450).encode())
+        await send_instr(dut, InstructionSB(tp, x1, 0x420).encode())
         await start_nops(dut)
 
         await test_pwm(dut, pwm, 1)

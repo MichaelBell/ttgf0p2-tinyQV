@@ -13,7 +13,7 @@ import math
 # When submitting your design, change this to the peripheral number
 # in peripherals.v.  e.g. if your design is i_user_peri05, set this to 5.
 # The peripheral number is not used by the test harness.
-PERIPHERAL_NUM = 12
+PERIPHERAL_NUM = 6
 
 def _isclose(pred, truth, rtol, atol):
     return abs(pred - truth) <= max(atol, rtol * abs(truth))
@@ -23,7 +23,7 @@ async def test_trigonometric_basic(dut):
     dut._log.info("Start")
 
     # Set the clock period to 100 ns (10 MHz)
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Interact with your design's registers through this TinyQV class.

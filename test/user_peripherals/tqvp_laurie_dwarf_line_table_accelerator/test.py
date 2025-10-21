@@ -7,7 +7,7 @@ from cocotb.triggers import ClockCycles
 
 from tqv import TinyQV
 
-PERIPHERAL_NUM = 34
+PERIPHERAL_NUM = 7
 
 class MmReg:
     PROGRAM_HEADER    = 0x00
@@ -46,7 +46,7 @@ class ExtendedOpcode:
 
 @cocotb.test()
 async def test_register_read_write_reset(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -109,9 +109,11 @@ async def test_register_read_write_reset(dut):
         await tqv.write_word_reg(illegal_reg, 0xFFFFFFFF)
         assert await tqv.read_word_reg(illegal_reg) == 0x0
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_program_header_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -162,9 +164,11 @@ async def test_partial_program_header_access(dut):
     for i in [1, 3]:
         assert await tqv.read_hword_reg(MmReg.PROGRAM_HEADER + i) == 0x0
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_program_code_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -206,9 +210,11 @@ async def test_partial_program_code_access(dut):
         assert await tqv.read_hword_reg(MmReg.PROGRAM_CODE + i) == 0x0
         assert await tqv.read_word_reg(MmReg.PROGRAM_CODE + i)  == 0x0
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_am_address_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -247,9 +253,11 @@ async def test_partial_am_address_access(dut):
         await tqv.write_word_reg(MmReg.AM_ADDRESS + i, 0x11111111)
         assert await tqv.read_word_reg(MmReg.AM_ADDRESS) == 0xABCD123
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_am_file_discrim_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -289,9 +297,11 @@ async def test_partial_am_file_discrim_access(dut):
         await tqv.write_word_reg(MmReg.AM_FILE_DISCRIM + i, 0x11111111)
         assert await tqv.read_word_reg(MmReg.AM_FILE_DISCRIM) == 0x1234ABCD
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_am_line_col_flags_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -330,9 +340,11 @@ async def test_partial_am_line_col_flags_access(dut):
         await tqv.write_word_reg(MmReg.AM_LINE_COL_FLAGS + i, 0x11111111)
         assert await tqv.read_word_reg(MmReg.AM_LINE_COL_FLAGS) == 0x23331235
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_status_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -388,9 +400,11 @@ async def test_partial_status_access(dut):
         await tqv.write_hword_reg(MmReg.STATUS, i)
         assert await tqv.read_word_reg(MmReg.STATUS) == StatusCode.READY
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_partial_info_access(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -425,9 +439,11 @@ async def test_partial_info_access(dut):
         await tqv.write_word_reg(MmReg.INFO + i, 0x11111111)
         assert await tqv.read_word_reg(MmReg.INFO) == 0x00000155
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_copy(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -452,9 +468,11 @@ async def test_dw_lns_copy(dut):
     await tqv.write_byte_reg(MmReg.STATUS, 254)
     assert await tqv.read_word_reg(MmReg.STATUS) == StatusCode.READY
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_advance_pc(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -512,9 +530,11 @@ async def test_dw_lns_advance_pc(dut):
     assert await tqv.read_word_reg(MmReg.AM_ADDRESS) == 0x814442
     await tqv.write_word_reg(MmReg.STATUS, 0)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_advance_line(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -575,9 +595,11 @@ async def test_dw_lns_advance_line(dut):
     assert await read_am_line(tqv) == 0x2
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_file(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -611,9 +633,11 @@ async def test_dw_lns_set_file(dut):
     assert await read_am_file(tqv) == 0xD9C4
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_column(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -640,9 +664,11 @@ async def test_dw_lns_set_column(dut):
     assert await read_am_column(tqv) == 0x131
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_negate_stmt(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -674,9 +700,11 @@ async def test_dw_lns_negate_stmt(dut):
     assert await read_am_is_stmt(tqv) == 1
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_basic_block(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -699,9 +727,11 @@ async def test_dw_lns_set_basic_block(dut):
     assert await read_am_basic_block(tqv) == 1
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_const_add_pc(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -723,9 +753,11 @@ async def test_dw_lns_const_add_pc(dut):
     assert await read_am_line(tqv)                   == 1
     await tqv.write_byte_reg(MmReg.STATUS, 0)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_fixed_advance_pc(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -744,9 +776,11 @@ async def test_dw_lns_fixed_advance_pc(dut):
     assert await tqv.read_word_reg(MmReg.AM_ADDRESS) == 0xBE01
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_prologue_end(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -769,9 +803,11 @@ async def test_dw_lns_set_prologue_end(dut):
     assert await read_am_prologue_end(tqv) == 1
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_epilogue_begin(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -794,9 +830,11 @@ async def test_dw_lns_set_epilogue_begin(dut):
     assert await read_am_epilogue_begin(tqv) == 1
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lns_set_isa(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -815,9 +853,11 @@ async def test_dw_lns_set_isa(dut):
     assert await wait_for_status_code(dut, tqv, StatusCode.EMIT_ROW, 10)
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lne_end_sequence(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -872,9 +912,11 @@ async def test_dw_lne_end_sequence(dut):
     assert await read_am_epilogue_begin(tqv) == 0
     assert await read_am_discrim(tqv)        == 0
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lne_set_address(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -888,9 +930,11 @@ async def test_dw_lne_set_address(dut):
     assert await tqv.read_word_reg(MmReg.AM_ADDRESS) == 0xABBCCDD
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_lne_set_discriminator(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -914,9 +958,11 @@ async def test_dw_lne_set_discriminator(dut):
     assert await read_am_discrim(tqv) == 0xFFFF
     await tqv.write_byte_reg(MmReg.STATUS, 1)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dw_special_opcodes(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)
@@ -959,9 +1005,11 @@ async def run_special_opcode_test(dut, tqv, opcode_base, line_base, line_range, 
     assert await read_am_line(tqv)                   == expected_line
     await tqv.write_byte_reg(MmReg.STATUS, 0)
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_illegal_instruction(dut):
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     tqv = TinyQV(dut, PERIPHERAL_NUM)

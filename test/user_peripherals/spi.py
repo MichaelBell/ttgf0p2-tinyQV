@@ -115,6 +115,9 @@ async def test_simple(dut):
         await transfer_byte(dut, tx_byte, rx_byte, i+1)
         assert await tqv.read_reg(2) == rx_byte
 
+    await tqv.terminate()
+
+
 @cocotb.test()
 async def test_multi_byte(dut):
     dut._log.info("Start")
@@ -209,6 +212,8 @@ async def test_multi_byte(dut):
         assert await tqv.read_reg(2) == rx_data
         await transfer_task
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_dc(dut):
     dut._log.info("Start")
@@ -255,3 +260,5 @@ async def test_dc(dut):
     assert await tqv.read_reg(0) == 4
     assert await tqv.read_reg(1) == tx_data
     assert await tqv.read_reg(2) == 15
+
+    await tqv.terminate()

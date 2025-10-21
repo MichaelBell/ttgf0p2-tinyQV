@@ -50,7 +50,7 @@ jobs:
           submodules: recursive
 
       - name: GL test
-        uses: TinyTapeout/tt-gds-action/gl_test@ttgf0p2
+        uses: MichaelBell/tt-gds-action/gl_test@ttgf0p2
         with:
           make-targets: ${{ matrix.target }}
 

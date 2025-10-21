@@ -10,14 +10,14 @@ from tqv import TinyQV
 # When submitting your design, change this to 16 + the peripheral number
 # in peripherals.v.  e.g. if your design is i_user_simple00, set this to 16.
 # The peripheral number is not used by the test harness.
-PERIPHERAL_NUM = 23
+PERIPHERAL_NUM = 17
 
 @cocotb.test()
 async def test_project(dut):
     dut._log.info("Start")
 
     # Set the clock period to 100 ns (10 MHz)
-    clock = Clock(dut.clk, 100, units="ns")
+    clock = Clock(dut.clk, 100, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Interact with your design's registers through this TinyQV class.
@@ -55,7 +55,7 @@ async def test_project(dut):
         await tqv.write_reg(1, (rbi << 7) | (lt << 6) | (bi << 5) | (al << 4))
         await tqv.write_reg(2, (extras << 5) | version)
         await tqv.write_reg(3, 0)
-        assert (dut.uo_out.value & 0x7F) == data
+        assert (dut.uo_out.value.to_unsigned() & 0x7F) == data
         assert (await tqv.read_reg(4) & 0x7F) == data
         assert (await tqv.read_reg(5) & 0xF0) == (rbo << 7) | (0x40 if value >= 10 else 0)
 
@@ -164,7 +164,7 @@ async def test_project(dut):
         await tqv.write_reg(1, (bi << 5) | (al << 4))
         await tqv.write_reg(2, (extras << 5) | (lc << 4) | (fs << 3))
         await tqv.write_reg(3, 2)
-        assert (dut.uo_out.value & 0x7F) == data
+        assert (dut.uo_out.value.to_unsigned() & 0x7F) == data
         assert (await tqv.read_reg(4) & 0x7F) == data
         assert (await tqv.read_reg(5) & 0x70) == (ltr << 5)
 
@@ -242,11 +242,11 @@ async def test_project(dut):
         await tqv.write_reg(0, value1 | (value2 << 4))
         await tqv.write_reg(1, (lt1 << 6) | (bi << 5) | (al << 4))
         await tqv.write_reg(3, 4)
-        assert (dut.uo_out.value & 0x1F) == u1 | (v1 << 1) | (w1 << 2) | (x1 << 3) | (y1 << 4)
+        assert (dut.uo_out.value.to_unsigned() & 0x1F) == u1 | (v1 << 1) | (w1 << 2) | (x1 << 3) | (y1 << 4)
         assert (await tqv.read_reg(4) & 0x1F) == u1 | (v1 << 1) | (w1 << 2) | (x1 << 3) | (y1 << 4)
         await tqv.write_reg(1, (lt2 << 6) | (bi << 5) | (al << 4))
         await tqv.write_reg(3, 5)
-        assert (dut.uo_out.value & 0x1F) == u2 | (v2 << 1) | (w2 << 2) | (x2 << 3) | (y2 << 4)
+        assert (dut.uo_out.value.to_unsigned() & 0x1F) == u2 | (v2 << 1) | (w2 << 2) | (x2 << 3) | (y2 << 4)
         assert (await tqv.read_reg(4) & 0x1F) == u2 | (v2 << 1) | (w2 << 2) | (x2 << 3) | (y2 << 4)
 
     # Cistercian
@@ -271,7 +271,7 @@ async def test_project(dut):
         await tqv.write_reg(1, (rbi << 7) | (lt << 6) | (bi << 5) | (al << 4))
         await tqv.write_reg(2, vbi)
         await tqv.write_reg(3, 6)
-        assert dut.uo_out.value == data
+        assert dut.uo_out.value.to_unsigned() == data
         assert await tqv.read_reg(4) == data
         assert (await tqv.read_reg(5) & 0xF0) == (rbo << 7) | (v << 6)
 

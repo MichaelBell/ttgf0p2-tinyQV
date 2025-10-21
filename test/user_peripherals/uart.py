@@ -128,6 +128,8 @@ async def test_basic(dut):
     assert await tqv.read_byte_reg(0) == val
     assert await tqv.read_byte_reg(0) == val2
 
+    await tqv.terminate()
+
 @cocotb.test()
 async def test_divider(dut):
     dut._log.info("Start")
@@ -142,7 +144,7 @@ async def test_divider(dut):
     await tqv.reset(initial_ui_in=0x80)
 
     for baud in (9600, 500000, 57600):
-        divider = 28000000 // baud
+        divider = 24000000 // baud
         bit_time = 1000000000 // baud
         dut._log.info(f"Test {baud} baud, divider {divider}")
 
@@ -163,3 +165,5 @@ async def test_divider(dut):
             await send_byte(dut, val2, check_rts=2, bit_time=bit_time)
             assert await tqv.read_byte_reg(0) == val
             assert await tqv.read_byte_reg(0) == val2
+
+    await tqv.terminate()

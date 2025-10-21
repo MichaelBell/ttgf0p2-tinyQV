@@ -1,7 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1761074523" />
-    <testcase name="test_basic" classname="user_peripherals.uart" file="/home/mdb36/asic/ttgf0p2-tinyQV/test/user_peripherals/uart.py" lineno="59" time="15.29297924041748" sim_time_ns="2702185.933" ratio_time="176694.54005786212" />
-    <testcase name="test_divider" classname="user_peripherals.uart" file="/home/mdb36/asic/ttgf0p2-tinyQV/test/user_peripherals/uart.py" lineno="131" time="0.0001652240753173828" sim_time_ns="0.0" ratio_time="0.0" />
-  </testsuite>
-</testsuites>
