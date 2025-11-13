@@ -103,14 +103,14 @@ Reset the design as follows:
 
 * Set rst_n high and then low to ensure the design sees a falling edge of rst_n.  The bidirectional IOs are all set to inputs while rst_n is low.
 * Program the flash and leave flash in continuous read mode, and the PSRAMs in QPI mode
-* Drive all the QSPI CS high and set SD1:SD0 to the read latency of the QSPI flash and PSRAM in cycles.
+* Drive all the QSPI CS high and set SD1:SD0 to the read latency of the QSPI flash and PSRAM in cycles.  SD2 selects whether half a cycle is subtracted from the read latency by driving the SPI clock on the negative edge.
 * Clock at least 8 times and stop with clock high
 * Release all the QSPI lines
 * Set rst_n high
 * Set clock low
 * Start clocking normally
 
-Based on the observed latencies from tt06 testing, at the target 64MHz clock a read latency of 2 is required.  The maximum supported latency is currently 3.
+At the target 24MHz clock a read latency of 1.5 is probably best (SD2:SD0 = 0b110).  The maximum supported latency is 3.
 
 The above should all be handled by some MicroPython scripts for the RP2 on the TT demo PCB.
 
