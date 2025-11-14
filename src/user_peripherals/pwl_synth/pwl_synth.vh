@@ -223,7 +223,7 @@
 
 `ifndef PURE_RTL
 //`define NAMED_BUF_EN
-//`define USE_LATCHES
+`define USE_LATCHES
 //`define USE_EXTRA_DELAY_BUFFERS
 `endif
 
