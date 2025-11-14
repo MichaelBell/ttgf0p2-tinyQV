@@ -13,9 +13,10 @@ USER_PERIPHERAL_7 = tqvp_laurie_dwarf_line_table_accelerator.test
 USER_PERIPHERAL_8 = spi
 USER_PERIPHERAL_9 = ubcd.test
 USER_PERIPHERAL_10 = matt_pwm.test
+USER_PERIPHERAL_11 = AY8913.test
 
 expand_tests = $(foreach num,$(1),$(USER_PERIPHERAL_$(num)))
-PERI_NUMBERS = $(shell seq 2 10)
+PERI_NUMBERS = $(shell seq 2 11)
 ALL_TESTS = $(call expand_tests,$(PERI_NUMBERS))
 
 .PHONY: clean core prog peri_test_% peri_num_% $(ALL_TESTS)

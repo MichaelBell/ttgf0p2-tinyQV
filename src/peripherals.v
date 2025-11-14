@@ -371,7 +371,7 @@ module tinyQV_peripherals #(parameter CLOCK_MHZ=64) (
         .data_out(data_from_simple_peri[2])
     );
 
-    tqvp_byte_empty i_simple_peri19(
+    tqvp_rejunity_ay8913 i_simple_peri19(
         .clk(clk),
         .rst_n(rst_n_rebuf),
         .ui_in(ui_in),
