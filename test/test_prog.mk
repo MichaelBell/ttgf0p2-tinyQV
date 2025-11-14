@@ -14,7 +14,7 @@ VERILOG_SOURCES += sim_qspi.v
 COMPILE_ARGS +=  -DPROG_FILE=\"$(PROG_FILE)\"
 
 # Local copy of sram test verilog
-VERILOG_SOURCES += gf180mcu_fd_ip_sram__sram512x8m8wm1.v
+#VERILOG_SOURCES += gf180mcu_fd_ip_sram__sram512x8m8wm1.v
 
 ifneq ($(GATES),yes)
 
