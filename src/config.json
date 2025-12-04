@@ -49,6 +49,7 @@
   "CLOCK_PORT": "clk",
 
   "MAGIC_EXT_USE_GDS": 1,
+  "DRT_ANTENNA_REPAIR_ITERS": 1,
 
   "//": "Configuration docs: https://librelane.readthedocs.io/en/latest/reference/configuration.html",
 
