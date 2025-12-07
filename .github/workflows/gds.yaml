@@ -18,6 +18,8 @@ jobs:
         with:
           pdk: gf180mcuD
           librelane-version: 3.0.0.dev45
+          tools-repo: MichaelBell/tt-support-tools
+          tools-ref: ttgf0p2
 
   precheck:
     needs: gds
