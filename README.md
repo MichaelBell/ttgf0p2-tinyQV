@@ -1,5 +1,11 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
+# TinyQV - A Risc-V SoC for Tiny Tapeout
+
+This version of TinyQV is similar to the competition versions on [ttsky25a](https://github.com/TinyTapeout/ttsky25a-tinyqv), but adapted for gf180mcu.
+
+There's one significant difference - this version contains logic to configure the QSPI flash and PSRAM chips after reset, so bring-up doesn't rely so heavily on configuration being done by the TT demo board.
+
 # Tiny Tapeout Verilog Project Template
 
 - [Read the documentation for project](docs/info.md)
