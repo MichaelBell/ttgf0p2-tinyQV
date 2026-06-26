@@ -6,6 +6,8 @@ This version of TinyQV is similar to the competition versions on [ttsky25a](http
 
 There's one significant difference - this version contains logic to configure the QSPI flash and PSRAM chips after reset, so bring-up doesn't rely so heavily on configuration being done by the TT demo board.
 
+See the [micropython](micropython/) directory for notes on testing with TinyQV Micropython.
+
 # Tiny Tapeout Verilog Project Template
 
 - [Read the documentation for project](docs/info.md)
