@@ -58,4 +58,4 @@ You can go into "paste mode" at the Micropython into the REPL by pressing Ctrl-E
 
 ## Tests
 
-See the python tests in this directory for tests of some peripherals.  Note that some of this code has not yet been tested 
+See the python tests in this directory for tests of some peripherals.  Note that some of this code has not yet been tested - let us know in the Discord when you get peripherals working, and please make PRs to contribute more tests!
